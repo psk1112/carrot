@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.crewmate.carrot.repository.CategoryMapper">
+
+    <!-- 회원 신고 카테고리 CRUD -->
+    <insert id="createUserKind" parameterType="UserClaimKindDTO">
+        INSERT
+          INTO user_claim_kind ( user_claim_kind_seq
+                               , user_claim_kind_name )
+        VALUES ( #{userClaimKindSeq}
+               , #{userClaimKindName} )
+    </insert>
+
+    <select id="userKindList" resultType="UserClaimKindDTO">
+        SELECT user_claim_kind_seq
+             , user_claim_kind_name
+          FROM user_claim_kind
+    </select>
+
+    <update id="modifyUserKind" parameterType="UserClaimKindDTO">
+        UPDATE user_claim_kind
+           SET user_claim_kind_name = #{userClaimKindName}
+         WHERE 1=1
+           AND user_claim_kind_seq = #{userClaimKindSeq}
+    </update>
+    
+    <delete id="deleteUserKind" parameterType="UserClaimKindDTO">
+        DELETE
+          FROM user_claim_kind
+         WHERE 1=1
+           AND  user_claim_kind_seq = #{userClaimKindSeq}
+    </delete>
+
+
+    <!-- 게시물 신고 카테고리 CRUD -->
+    <insert id="createPostKind" parameterType="PostClaimKindDTO">
+        INSERT
+          INTO post_claim_kind ( post_claim_kind_seq
+                               , post_claim_kind_name )
+        VALUES ( #{postClaimKindSeq}
+               , #{postClaimKindName} )
+    </insert>
+
+    <select id="postKindList" resultType="PostClaimKindDTO">
+        SELECT post_claim_kind_seq
+             , post_claim_kind_name
+          FROM post_claim_kind
+    </select>
+
+    <update id="modifyPostKind" parameterType="PostClaimKindDTO">
+        UPDATE post_claim_kind
+           SET post_claim_kind_name = #{postClaimKindName}
+         WHERE 1=1
+           AND post_claim_kind_seq = #{postClaimKindSeq}
+    </update>
+    
+    <delete id="deletePostKind" parameterType="PostClaimKindDTO">
+        DELETE
+          FROM post_claim_kind
+         WHERE 1=1
+           AND  post_claim_kind_seq = #{postClaimKindSeq}
+    </delete>
+
+    
+    <!-- FAQ 카테고리 CRUD -->
+    <insert id="createFaqKind" parameterType="FaqKindDTO">
+        INSERT
+          INTO faq_kind ( faq_kind_seq
+                        , faq_kind_name )
+        VALUES ( #{faqKindSeq}
+               , #{faqKindName} )
+    </insert>
+
+    <select id="faqKindList" resultType="FaqKindDTO">
+        SELECT DISTINCT faq_kind_seq
+             , faq_kind_name
+          FROM faq_kind
+    </select>
+
+    <update id="modifyFaqKind" parameterType="FaqKindDTO">
+        UPDATE faq_kind
+           SET faq_kind_name = #{faqKindName}
+         WHERE 1=1
+           AND faq_kind_seq = #{faqKindSeq}
+    </update>
+    
+    <delete id="deleteFaqKind" parameterType="FaqKindDTO">
+        DELETE
+          FROM faq_kind
+         WHERE 1=1
+           AND  faq_kind_seq = #{faqKindSeq}
+    </delete>
+    
+    
+    <!-- 문의하기 카테고리 CRUD -->
+    <insert id="createQuestionKind" parameterType="QuestionKindDTO">
+        INSERT
+          INTO question_kind ( question_kind_seq
+                             , question_kind_name )
+        VALUES ( #{questionKindSeq}
+               , #{questionKindName} )
+    </insert>
+    
+    <select id="questionKindList" resultType="QuestionKindDTO">
+        SELECT question_kind_seq
+             , question_kind_name
+          FROM question_kind
+    </select>
+    
+    <update id="modifyQuestionKind" parameterType="QuestionKindDTO">
+        UPDATE question_kind
+           SET question_kind_name = #{questionKindName}
+         WHERE 1=1
+           AND question_kind_seq = #{questionKindSeq}
+    </update>
+    
+    <delete id="deleteQuestionKind" parameterType="QuestionKindDTO">
+        DELETE
+          FROM question_kind
+         WHERE 1=1
+           AND  question_kind_seq = #{questionKindSeq}
+    </delete>
+    
+</mapper>
+
+

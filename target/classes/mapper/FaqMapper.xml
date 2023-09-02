@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.crewmate.carrot.repository.FaqMapper">
+
+    <!-- 공지사항 등록 카테고리 CRUD -->
+    <insert id="createFaq" parameterType="FaqDTO">
+        INSERT
+          INTO faq ( faq_seq
+                   , faq_kind_seq
+                   , faq_title
+                   , faq_content
+                   , faq_view_count
+                   , faq_created_at)
+        VALUES ( #{faqSeq}
+               , #{faqKindSeq}
+               , #{faqTitle}
+               , #{faqContent}
+               , #{faqViewCount}
+               , #{faqCreatedAt} )
+    </insert>
+
+    <select id="faqList" resultType="FaqDTO">
+        SELECT @ROWNUM:=@ROWNUM+1 as rownum
+             , a.faq_seq
+             , a.faq_kind_seq
+             , b.faq_kind_name
+             , a.faq_title
+             , a.faq_content
+             , a.faq_view_count
+             , a.faq_created_at
+          FROM faq a
+             , faq_kind b
+             , (SELECT @ROWNUM:=0) R
+         WHERE 1=1
+           AND a.faq_kind_seq = b.faq_kind_seq
+        <if test="faqKindSeq != null and faqKindSeq != ''">
+           AND a.faq_kind_seq = #{faqKindSeq}
+        </if>
+    </select>
+    
+    <select id="countFaqList" resultType="int">
+        SELECT count(*)
+          FROM faq a
+             , faq_kind b
+         WHERE 1=1
+           AND a.faq_kind_seq = b.faq_kind_seq
+        <if test="faqKindSeq != null and faqKindSeq != ''">
+           AND a.faq_kind_seq = #{faqKindSeq}
+        </if>
+    </select>
+
+    <update id="modifyUserKind" parameterType="FaqDTO">
+        UPDATE user_claim_kind
+           SET user_claim_kind_name = #{userClaimKindName}
+         WHERE 1=1
+           AND user_claim_kind_seq = #{userClaimKindSeq}
+    </update>
+    
+    <delete id="deleteUserKind" parameterType="FaqDTO">
+        DELETE
+          FROM user_claim_kind
+         WHERE 1=1
+           AND  user_claim_kind_seq = #{userClaimKindSeq}
+    </delete>
+</mapper>
+
+
