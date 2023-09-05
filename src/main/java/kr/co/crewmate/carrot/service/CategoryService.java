@@ -235,9 +235,9 @@ public class CategoryService {
     }
 
     //삭제
-    public boolean deleteData(String requestData){
-        System.out.println(requestData);
-        String[] parts = requestData.split("_");
+    public boolean deleteData(String inputSeq){
+        System.out.println(inputSeq);
+        String[] parts = inputSeq.split("_");
 
         if (parts.length > 1) {
             String prontUnderscore = parts[0];   // faq_34 =>faq

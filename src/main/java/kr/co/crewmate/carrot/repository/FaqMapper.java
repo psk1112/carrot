@@ -12,4 +12,6 @@ public interface FaqMapper {
     void createFaq (FaqDTO faqDTO);
     List<FaqDTO> faqList (String faqKindSeq);
     int countFaqList (String faqKindSeq);
+    int deleteFaq (int faqSeq);
+    int modifyFaq (int faqSeq);
 }

@@ -18,6 +18,7 @@
             var selectDrops = document.querySelectorAll(".select-drop");
             var modifyButtons = document.querySelectorAll(".modify-button");
             var deleteButtons = document.querySelectorAll(".delete-button");
+            var writeButtons = document.getElementById("writeBtn");
 
 
             // 구분 별로 자주 묻는 질문 목록을 조회
@@ -30,14 +31,85 @@
             });
 
 
-            // 삭제버튼 클릭 시
+            // 삭제 버튼 클릭 시
             deleteButtons.forEach(function(button) {
                 button.addEventListener("click", function(event) {
+                    var row = event.target.closest("tr");
+                    var faqSeq = row.getAttribute("faq-seq-id");
 
+                    Swal.fire({
+                        title: '정말로 삭제하시겠습니까?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: '삭제',
+                        cancelButtonText: '취소'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+
+                            // AJAX 요청으로 서버에 데이터 전송
+                            fetch("/faq/deleteData", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "text/plain;charset=UTF-8"
+                                },
+                                body: faqSeq
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.statusCode === 200) {
+                                    Swal.fire({
+                                        text: '성공적으로 삭제되었습니다.',
+                                        icon: 'success',
+                                        confirmButtonText: '확인'
+                                    }).then(() => {
+                                         window.location.reload();
+                                    });
+                                } else if (data.statusCode === 403) {
+                                    Swal.fire(
+                                        '게시물 삭제에 실패했습니다.',
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                            //AJAX END
+                        }
+                    });
                 });
             });
 
+
+            // 수정 버튼 클릭 시
+            modifyButtons.forEach(function(button) {
+                button.addEventListener("click", function(event) {
+                    var row = event.target.closest("tr");
+                    var faqSeq = row.getAttribute("faq-seq-id");
+
+                    //ajax
+                    fetch("/faq/modify", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "text/plain;charset=UTF-8"
+                        },
+                        body: faqSeq
+                    })
+
+                })
+            })
+
+
+
+            // 글쓰기 버튼 클릭 시
+            writeButtons.addEventListener("click", function(){
+                 window.location.href = "write";
+            });
+
         });
+
 
     </script>
 </th:block>
@@ -46,46 +118,8 @@
     <h3>자주 묻는 질문</h3><br>
     <label>결과: </label>
     <span th:text="${countList}"></span>
-    <button type="button" class="btn btn-warning" id="writeBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">글쓰기</button>
+    <button type="button" class="btn btn-warning" id="writeBtn">글쓰기</button>
 
-    <!-- Modal START-->
-    <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-            <div class="modal-content">
-
-                <!-- 여기야!!! -->
-                <form th:action="@{/faq/saveData}" th:object="${faqDTO}" method="post">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">자주 묻는 질문 등록</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="faqKind" class="col-form-label">구분:</label>
-                        <select class="form-select" id="faqKind" aria-label="faqKindSelector">
-                            <option th:each="faqNm : ${faqKind}" th:value="${faqNm.faqKindSeq}" th:text="${faqNm.faqKindName}"></option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label th:for="faqTitle" class="col-form-label">제목:</label>
-                        <input th:field="*{faqTitle}" type="text" class="form-control" >
-                        <p th:if="${#fields.hasErrors('faqTitle')}" th:errors="*{faqTitle}"></p>
-                    </div>
-                    <div class="mb-3">
-                        <label th:for="faqContent" class="col-form-label">내용:</label>
-                        <textarea th:field="*{faqContent}" rows="6" class="form-control" ></textarea>
-                        <p th:if="${#fields.hasErrors('faqContent')}" th:errors="*{faqContent}"></p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="submit" class="btn btn-warning">저장</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- Modal END-->
     <table class="table table-hover">
         <thead>
         <tr class="table-warning">
@@ -96,6 +130,9 @@
                         구분
                     </a>
                     <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item select-drop" th:text="'전체보기'" th:value="''" th:href="@{/faq/list}"></a>
+                        </li>
                         <li th:each="faqKind : ${faqKind}">
                             <a class="dropdown-item select-drop" th:text="${faqKind.faqKindName}" th:value="${faqKind.faqKindSeq}" th:href="@{/faq/list(seq=${faqKind.faqKindSeq})}"></a>
                         </li>
@@ -107,17 +144,17 @@
         </tr>
         </thead>
         <tbody id="faqListTableBody">
-        <tr th:each="faqList, rowStatus : ${faqList}">
+        <tr th:each="faqList, rowStatus : ${faqList}" th:faq-seq-id="${faqList.faqSeq}">
             <th th:text="${faqList.rownum}"></th>
             <td th:text="${faqList.faqKindName}"></td>
             <td>
                 <p>
-                    <a th:text="${faqList.faqTitle}" data-bs-toggle="collapse" th:attr="href='#faqCollapse' + ${rowStatus.index}" role="button" aria-expanded="false" aria-controls="faqCollapse"></a>
+                    <a th:fag-title-id="faqTitleText" th:text="${faqList.faqTitle}" data-bs-toggle="collapse" th:attr="href='#faqCollapse' + ${faqList.faqSeq}" role="button" aria-expanded="false" aria-controls="faqCollapse"></a>
                 </p>
                 <div class="row">
                     <div class="col">
-                        <div class="collapse multi-collapse" th:id="'faqCollapse' + ${rowStatus.index}">
-                            <div th:text="${faqList.faqContent}">
+                        <div class="collapse multi-collapse" th:id="'faqCollapse' + ${faqList.faqSeq}">
+                            <div th:faq-content-id="faqContentText" th:text="${faqList.faqContent}">
                             </div>
                             <button type="button" class="btn btn-outline-warning btn-sm modify-button">수정</button>
                             <button type="button" class="btn btn-outline-danger btn-sm delete-button">삭제</button>

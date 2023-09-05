@@ -48,19 +48,21 @@
            AND a.faq_kind_seq = #{faqKindSeq}
         </if>
     </select>
-
-    <update id="modifyUserKind" parameterType="FaqDTO">
-        UPDATE user_claim_kind
-           SET user_claim_kind_name = #{userClaimKindName}
+    
+    <update id="modifyFaq" parameterType="FaqDTO">
+        UPDATE faq
+           SET faq_kind_seq = #{faqKindSeq}
+             , faq_title = #{faqTitle}
+             , faq_content = #{faqContent}
          WHERE 1=1
-           AND user_claim_kind_seq = #{userClaimKindSeq}
+           AND faq_seq = #{faqSeq}
     </update>
     
-    <delete id="deleteUserKind" parameterType="FaqDTO">
+    <delete id="deleteFaq" parameterType="FaqDTO">
         DELETE
-          FROM user_claim_kind
+          FROM faq
          WHERE 1=1
-           AND  user_claim_kind_seq = #{userClaimKindSeq}
+           AND  faq_seq = #{faqSeq}
     </delete>
 </mapper>
 

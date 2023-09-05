@@ -75,21 +75,20 @@ public class CategoryController {
     /**
      * 카테고리를 삭제하는 과정
      *
-     * @param requestData
+     * @param inputSeq
      * @return redirect:/category/create
      */
     @PostMapping("/deleteData")
-    public ResponseEntity<Map<String, String>> deleteData(@RequestBody String requestData) {
-        boolean deleted = categoryService.deleteData(requestData);
+    public ResponseEntity<Map<String, String>> deleteData(@RequestBody String inputSeq) {
+        boolean deleted = categoryService.deleteData(inputSeq);
         //데이터 처리 개수 > 0 인지 확인
+        Map<String, String> response = new HashMap<>();
         if (deleted) {
-            Map<String, String> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "삭제 완료");
 
             return ResponseEntity.ok(response);
         } else {
-            Map<String, String> response = new HashMap<>();
             response.put("status", "error");
             response.put("message", "삭제 실패");
 
