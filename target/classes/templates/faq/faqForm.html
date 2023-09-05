@@ -18,16 +18,98 @@
             var selectDrops = document.querySelectorAll(".select-drop");
             var modifyButtons = document.querySelectorAll(".modify-button");
             var deleteButtons = document.querySelectorAll(".delete-button");
+            var writeButtons = document.getElementById("writeBtn");
 
-            // 삭제버튼 클릭 시
+            // 구분 별로 자주 묻는 질문 목록을 조회
+            selectDrops.forEach(function(selectDrop) {
+                selectDrop.addEventListener("click", function(event) {
+                    var faqKindSeq = event.target.getAttribute("value");
+                    var url = '/faq/list?seq=' + faqKindSeq;
+                    window.location.href = url; // 페이지 전환
+                });
+            });
+
+
+            // 삭제 버튼 클릭 시
             deleteButtons.forEach(function(button) {
                 button.addEventListener("click", function(event) {
+                    var row = event.target.closest("tr");
+                    var faqSeq = row.getAttribute("faq-seq-id");
 
+                    Swal.fire({
+                        title: '정말로 삭제하시겠습니까?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: '삭제',
+                        cancelButtonText: '취소'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+
+                            // AJAX 요청으로 서버에 데이터 전송
+                            fetch("/faq/deleteData", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "text/plain;charset=UTF-8"
+                                },
+                                body: faqSeq
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.statusCode === 200) {
+                                    Swal.fire({
+                                        text: '성공적으로 삭제되었습니다.',
+                                        icon: 'success',
+                                        confirmButtonText: '확인'
+                                    }).then(() => {
+                                         window.location.reload();
+                                    });
+                                } else if (data.statusCode === 403) {
+                                    Swal.fire(
+                                        '게시물 삭제에 실패했습니다.',
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                            //AJAX END
+                        }
+                    });
                 });
+            });
+
+
+            // 수정 버튼 클릭 시
+            modifyButtons.forEach(function(button) {
+                button.addEventListener("click", function(event) {
+                    var row = event.target.closest("tr");
+                    var faqSeq = row.getAttribute("faq-seq-id");
+
+                    //ajax
+                    fetch("/faq/modify", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "text/plain;charset=UTF-8"
+                        },
+                        body: faqSeq
+                    })
+
+                })
+            })
+
+
+
+            // 글쓰기 버튼 클릭 시
+            writeButtons.addEventListener("click", function(){
+                 window.location.href = "write";
             });
 
         });
 
+<<<<<<< HEAD
         function selectFaqKind() {
             var faqKindSelect = document.getElementById("faqKind");
             var selectedValue = faqKindSelect.value;
@@ -47,7 +129,7 @@
             formData.append("faqContent", faqContentInput.value);
 
                 console.log(formData);
-                
+
             fetch("/faq/saveData", {
                 method: "POST",
                 body: formData
@@ -71,6 +153,9 @@
                 console.error("에러: " + error);
             });
         }
+=======
+
+>>>>>>> 7dfe5840f6f2250de6912e1027347a1ea7ad350c
     </script>
 </th:block>
 
@@ -78,7 +163,7 @@
     <h3>자주 묻는 질문</h3><br>
     <label>결과: </label>
     <span th:text="${countList}"></span>
-    <button type="button" class="btn btn-warning" id="writeBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">글쓰기</button>
+    <button type="button" class="btn btn-warning" id="writeBtn">글쓰기</button>
 
     <table class="table table-hover">
         <thead>
@@ -90,6 +175,9 @@
                         구분
                     </a>
                     <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item select-drop" th:text="'전체보기'" th:value="''" th:href="@{/faq/list}"></a>
+                        </li>
                         <li th:each="faqKind : ${faqKind}">
                             <a class="dropdown-item select-drop" th:text="${faqKind.faqKindName}" th:value="${faqKind.faqKindSeq}" href="#"
                                onclick="selectFaqKind('${faqKind.faqKindSeq}')"></a>
@@ -102,17 +190,17 @@
         </tr>
         </thead>
         <tbody id="faqListTableBody">
-        <tr th:each="faqList, rowStatus : ${faqList}">
+        <tr th:each="faqList, rowStatus : ${faqList}" th:faq-seq-id="${faqList.faqSeq}">
             <th th:text="${faqList.rownum}"></th>
             <td th:text="${faqList.faqKindName}"></td>
             <td>
                 <p>
-                    <a th:text="${faqList.faqTitle}" data-bs-toggle="collapse" th:attr="href='#faqCollapse' + ${rowStatus.index}" role="button" aria-expanded="false" aria-controls="faqCollapse"></a>
+                    <a th:fag-title-id="faqTitleText" th:text="${faqList.faqTitle}" data-bs-toggle="collapse" th:attr="href='#faqCollapse' + ${faqList.faqSeq}" role="button" aria-expanded="false" aria-controls="faqCollapse"></a>
                 </p>
                 <div class="row">
                     <div class="col">
-                        <div class="collapse multi-collapse" th:id="'faqCollapse' + ${rowStatus.index}">
-                            <div th:text="${faqList.faqContent}">
+                        <div class="collapse multi-collapse" th:id="'faqCollapse' + ${faqList.faqSeq}">
+                            <div th:faq-content-id="faqContentText" th:text="${faqList.faqContent}">
                             </div>
                             <button type="button" class="btn btn-outline-warning btn-sm modify-button">수정</button>
                             <button type="button" class="btn btn-outline-danger btn-sm delete-button">삭제</button>

@@ -1,17 +1,19 @@
 package kr.co.crewmate.carrot.model;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
-@Getter
+@Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class FaqDTO {
 
     private int rownum;
     private int faqSeq;
+    @Min(value = 1, message = "카테고리를 먼저 등록 후 이용하세요.")
     private int faqKindSeq;
     private String faqKindName;
     @NotEmpty(message = "제목을 입력하세요.")
@@ -21,15 +23,4 @@ public class FaqDTO {
     private int faqViewCount;
     private String faqCreatedAt;
 
-    public FaqDTO(int rownum, int faqSeq, int faqKindSeq, String faqKindName,
-                  String faqTitle, String faqContent, int faqViewCount, String faqCreatedAt) {
-        this.rownum = rownum;
-        this.faqSeq = faqSeq;
-        this.faqKindSeq = faqKindSeq;
-        this.faqKindName = faqKindName;
-        this.faqTitle = faqTitle;
-        this.faqContent = faqContent;
-        this.faqViewCount = faqViewCount;
-        this.faqCreatedAt = faqCreatedAt;
-    }
 }

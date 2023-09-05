@@ -88,8 +88,8 @@
                         if (result.isConfirmed) {
 
                             // AJAX 요청으로 서버에 데이터 전송
-                            fetch("/category/deleteData", {
-                                method: "POST",
+                            fetch("/admin/category", {
+                                method: "DELETE",
                                 headers: {
                                     "Content-Type": "text/plain;charset=UTF-8"
                                 },
@@ -97,7 +97,7 @@
                             })
                             .then(response => response.json())
                             .then(data => {
-                                if (data.status === "success") {
+                                if (data.statusCode === 200) {
                                     Swal.fire({
                                         text: '성공적으로 삭제되었습니다.',
                                         icon: 'success',
@@ -112,16 +112,13 @@
                                     )
                                 }
                             })
-                            .catch(error => {
-                                alert(error.message);
-                            })
                             //AJAX END
                         }
                     });
                 });
             });
 
-
+            //여기 바꿔야돼 공통으로 못씀 method: "POST", method: "PUT"으로 써야됨
             // 저장 버튼 클릭 공통 로직 함수
             function handleSaveButtonClick(tabId) {
 
@@ -166,7 +163,7 @@
                     var jsonData = JSON.stringify(data);
 
                     // AJAX 요청으로 서버에 데이터 전송
-                    fetch("/category/saveData", {
+                    fetch("/admin/category", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json;charset=UTF-8"
@@ -175,7 +172,7 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.status === "success") {
+                        if(data.statusCode === 200){
                             Swal.fire({
                                 text: '성공적으로 처리되었습니다.',
                                 icon: 'success',
@@ -183,14 +180,10 @@
                             }).then(() => {
                                  window.location.reload();
                             })
-                        } else {
-                            console.log(data)
+                        }else {
                             Swal.fire('처리 실패했습니다.');
                         }
                     })
-                    .catch(error => {
-                        alert(error.message)
-                    });
                 });
             }
 

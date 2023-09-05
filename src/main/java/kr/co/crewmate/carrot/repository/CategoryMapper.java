@@ -12,27 +12,27 @@ import java.util.List;
 public interface CategoryMapper {
 
     //회원 신고 카테고리 CRUD
-    List<UserClaimKindDTO> userKindList();
-    int createUserKind (UserClaimKindDTO userClaimKindDTO);
-    int modifyUserKind (UserClaimKindDTO userClaimKindDTO);
+    List<UserClaimKindDTO> selectUserKindList();
+    int insertUserKind (UserClaimKindDTO userClaimKindDTO);
+    int updateUserKind (UserClaimKindDTO userClaimKindDTO);
 
 
     //게시물 신고 카테고리 CRUD
-    List<PostClaimKindDTO> postKindList();
-    int createPostKind (PostClaimKindDTO postClaimKindDTO);
-    int modifyPostKind (PostClaimKindDTO postClaimKindDTO);
+    List<PostClaimKindDTO> selectPostKindList();
+    int insertPostKind (PostClaimKindDTO postClaimKindDTO);
+    int updatePostKind (PostClaimKindDTO postClaimKindDTO);
 
 
     //자주 묻는 질문 카테고리 CRUD
-    List<FaqKindDTO> faqKindList();
-    int createFaqKind (FaqKindDTO faqKindDTO);
-    int modifyFaqKind (FaqKindDTO faqKindDTO);
+    List<FaqKindDTO> selectFaqKindList();
+    int insertFaqKind (FaqKindDTO faqKindDTO);
+    int updateFaqKind (FaqKindDTO faqKindDTO);
 
 
     //문의하기 카테고리 CRUD
-    List<QuestionKindDTO> questionKindList();
-    int createQuestionKind (QuestionKindDTO questionKindDTO);
-    int modifyQuestionKind (QuestionKindDTO questionKindDTO);
+    List<QuestionKindDTO> selectQuestionKindList();
+    int insertQuestionKind (QuestionKindDTO questionKindDTO);
+    int updateQuestionKind (QuestionKindDTO questionKindDTO);
 
     //삭제
     int deleteUserKind (int seq);

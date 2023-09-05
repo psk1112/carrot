@@ -3,7 +3,7 @@
 <mapper namespace="kr.co.crewmate.carrot.repository.CategoryMapper">
 
     <!-- 회원 신고 카테고리 CRUD -->
-    <insert id="createUserKind" parameterType="UserClaimKindDTO">
+    <insert id="insertUserKind" parameterType="UserClaimKindDTO">
         INSERT
           INTO user_claim_kind ( user_claim_kind_seq
                                , user_claim_kind_name )
@@ -11,13 +11,13 @@
                , #{userClaimKindName} )
     </insert>
 
-    <select id="userKindList" resultType="UserClaimKindDTO">
+    <select id="selectUserKindList" resultType="UserClaimKindDTO">
         SELECT user_claim_kind_seq
              , user_claim_kind_name
           FROM user_claim_kind
     </select>
 
-    <update id="modifyUserKind" parameterType="UserClaimKindDTO">
+    <update id="updateUserKind" parameterType="UserClaimKindDTO">
         UPDATE user_claim_kind
            SET user_claim_kind_name = #{userClaimKindName}
          WHERE 1=1
@@ -33,7 +33,7 @@
 
 
     <!-- 게시물 신고 카테고리 CRUD -->
-    <insert id="createPostKind" parameterType="PostClaimKindDTO">
+    <insert id="insertPostKind" parameterType="PostClaimKindDTO">
         INSERT
           INTO post_claim_kind ( post_claim_kind_seq
                                , post_claim_kind_name )
@@ -41,13 +41,13 @@
                , #{postClaimKindName} )
     </insert>
 
-    <select id="postKindList" resultType="PostClaimKindDTO">
+    <select id="selectPostKindList" resultType="PostClaimKindDTO">
         SELECT post_claim_kind_seq
              , post_claim_kind_name
           FROM post_claim_kind
     </select>
 
-    <update id="modifyPostKind" parameterType="PostClaimKindDTO">
+    <update id="updatePostKind" parameterType="PostClaimKindDTO">
         UPDATE post_claim_kind
            SET post_claim_kind_name = #{postClaimKindName}
          WHERE 1=1
@@ -63,7 +63,7 @@
 
     
     <!-- FAQ 카테고리 CRUD -->
-    <insert id="createFaqKind" parameterType="FaqKindDTO">
+    <insert id="insertFaqKind" parameterType="FaqKindDTO">
         INSERT
           INTO faq_kind ( faq_kind_seq
                         , faq_kind_name )
@@ -71,13 +71,13 @@
                , #{faqKindName} )
     </insert>
 
-    <select id="faqKindList" resultType="FaqKindDTO">
+    <select id="selectFaqKindList" resultType="FaqKindDTO">
         SELECT DISTINCT faq_kind_seq
              , faq_kind_name
           FROM faq_kind
     </select>
 
-    <update id="modifyFaqKind" parameterType="FaqKindDTO">
+    <update id="updateFaqKind" parameterType="FaqKindDTO">
         UPDATE faq_kind
            SET faq_kind_name = #{faqKindName}
          WHERE 1=1
@@ -93,7 +93,7 @@
     
     
     <!-- 문의하기 카테고리 CRUD -->
-    <insert id="createQuestionKind" parameterType="QuestionKindDTO">
+    <insert id="insertQuestionKind" parameterType="QuestionKindDTO">
         INSERT
           INTO question_kind ( question_kind_seq
                              , question_kind_name )
@@ -101,13 +101,13 @@
                , #{questionKindName} )
     </insert>
     
-    <select id="questionKindList" resultType="QuestionKindDTO">
+    <select id="selectQuestionKindList" resultType="QuestionKindDTO">
         SELECT question_kind_seq
              , question_kind_name
           FROM question_kind
     </select>
     
-    <update id="modifyQuestionKind" parameterType="QuestionKindDTO">
+    <update id="updateQuestionKind" parameterType="QuestionKindDTO">
         UPDATE question_kind
            SET question_kind_name = #{questionKindName}
          WHERE 1=1

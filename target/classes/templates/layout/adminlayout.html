@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <title>당근마켓 관리자 페이지</title>
-    <link href="../admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/admin/css/bootstrap.min.css" rel="stylesheet">
     <link href="/admin/css/sidebars.css" rel="stylesheet">
     <th:block layout:fragment="css"></th:block>
     <style>
@@ -17,6 +17,7 @@
         #layoutSidenav {
             float: left;
             width: 15%;
+            min-height: 800px;
         }
 
         #layoutSidenav_content {
@@ -28,7 +29,7 @@
 <body class="sb-nav-fixed">
     <th:block th:replace="~{adminFragments/header :: headerFragment}"></th:block>
     <div id="contain">
-        <div id="layoutSidenav">
+        <div id="layoutSidenav" class="bg-warning bg-gradient bg-opacity-50">
             <th:block th:replace="~{adminFragments/sidebar :: sidebarFragment}"></th:block>
         </div>
 
