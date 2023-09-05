@@ -6,6 +6,7 @@ import kr.co.crewmate.carrot.model.FaqKindDTO;
 import kr.co.crewmate.carrot.service.CategoryService;
 import kr.co.crewmate.carrot.service.FaqService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,9 +30,8 @@ public class FaqController {
         List<FaqDTO> faqList = faqService.faqList(faqKindSeq);
         int countList = faqService.countFaqList(faqKindSeq);
         List<FaqKindDTO> faqKind = categoryService.faqKindList();
-        FaqDTO faqDTO = new FaqDTO();
 
-        model.addAttribute("faqDTO", faqDTO);
+        model.addAttribute("faqDTO", new FaqDTO());
         model.addAttribute("faqList", faqList);
         model.addAttribute("countList", countList);
         model.addAttribute("faqKind", faqKind);
@@ -41,14 +41,15 @@ public class FaqController {
 
 
     @PostMapping("/saveData")
-    public String saveData (@Validated FaqDTO faqDTO, BindingResult bindingResult, Model model){
+    public ResponseEntity<String> saveData (@Valid @ModelAttribute FaqDTO faqDTO, BindingResult bindingResult){
+
+        System.out.println(faqDTO.getFaqKindSeq()+"::::"+faqDTO.getFaqTitle()+":::"+ faqDTO.getFaqContent());
 
         if(bindingResult.hasErrors()){
-            System.out.println(bindingResult.hasErrors());
-            return "faq/faqForm";
+            return ResponseEntity.badRequest().body("입력값이 올바르지 않습니다.");
         }
 
         faqService.processCreateFaq(faqDTO);
-        return "redirect:/faq/list";
+        return ResponseEntity.ok("성공적으로 저장되었습니다.");
     }
 }
