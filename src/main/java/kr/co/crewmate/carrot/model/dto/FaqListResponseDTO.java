@@ -1,15 +1,17 @@
-package kr.co.crewmate.carrot.model;
+package kr.co.crewmate.carrot.model.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FaqDTO {
+public class FaqListResponseDTO {
 
     private int rownum;
     private int faqSeq;

@@ -12,7 +12,11 @@
         }
 
         h3 {
-            padding-top: 20px;
+            padding-top: 10px;
+        }
+
+        h5 {
+            padding-bottom: 10px;
         }
 
         .surround {
@@ -24,8 +28,15 @@
         .tableBox {
             flex: 1;
             overflow: auto;
-            max-height: calc(60vh - 150px);
-            padding: 20px;
+            max-height: calc(60vh - 400px);
+            padding: 10px;
+        }
+
+        .cateListBox{
+            flex: 1;
+            overflow: auto;
+            max-height: calc(60vh - 300px);
+            padding: 10px;
         }
 
         .buttonBox {
@@ -41,128 +52,82 @@
             var modifyButtons = document.querySelectorAll(".modify-button");
             var deleteButtons = document.querySelectorAll(".delete-button");
 
+            // tabId
+            var tabSelector = [
+                "#user-tab-pane",
+                "#post-tab-pane",
+                "#faq-tab-pane",
+                "#question-tab-pane"
+            ]
 
-            // 새 카테고리 추가 공통 로직 (Input hidden요소 없애기)
-            function handleAddNewCategory(tabId){
-                var addNewCategory = document.querySelector(tabId + " .clickable-text");
-
-                addNewCategory.addEventListener("click", function() {
-                    var newCategoryInput = document.querySelector(tabId + " .newCate");
-                    newCategoryInput.removeAttribute("hidden");
-                });
-            }
-
-
-            // 수정 버튼 클릭
-            modifyButtons.forEach(function(button) {
-                button.addEventListener("click", function(event) {
-
-                    var kindSeq = event.target.getAttribute("data-id");
-                    var kindInput = document.getElementById(kindSeq);
-
-                    kindInput.readOnly = false; //해당 input요소 readonly해제
-
-                    kindInput.addEventListener("change", function() {
-                        kindInput.dataset.changed = "true";
-                    });
-                });
+            tabSelector.forEach(function(tabSelector){
+                handleAddNewCategory(tabSelector);
             });
 
 
-            // 삭제 버튼 클릭
-            deleteButtons.forEach(function(button) {
-                button.addEventListener("click", function(event) {
+            // 새 카테고리 추가
+            function handleAddNewCategory(tabId){
+                var addNewCategoryButton = document.querySelector(tabId + " .clickable-text");
+                var newCateSaveButton = document.querySelector(tabId + " .newCate-save-button");
+                var categoryTable = document.querySelector(tabId + " .tableBox table");
+                var maxCategoryCount = 4;
+                var currentCategoryCount = 0;
 
-                    var inputSeq = event.target.getAttribute("data-id");
+                addNewCategoryButton.addEventListener("click", function() {
+                    newCateSaveButton.removeAttribute("hidden");
 
-                    Swal.fire({
-                        title: '정말로 삭제하시겠습니까?',
-                        text: "카테고리와 관련된 게시물 모두 삭제됩니다. ",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: '삭제',
-                        cancelButtonText: '취소'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
+                    if (currentCategoryCount < maxCategoryCount) {
+                        // 새로운 <tr> 엘리먼트 생성
+                        var newRow = document.createElement("tr");
 
-                            // AJAX 요청으로 서버에 데이터 전송
-                            fetch("/admin/category", {
-                                method: "DELETE",
-                                headers: {
-                                    "Content-Type": "text/plain;charset=UTF-8"
-                                },
-                                body: inputSeq
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.statusCode === 200) {
-                                    Swal.fire({
-                                        text: '성공적으로 삭제되었습니다.',
-                                        icon: 'success',
-                                        confirmButtonText: '확인'
-                                    }).then(() => {
-                                         window.location.reload();
-                                    })
-                                } else {
-                                    Swal.fire(
-                                    '게시물 삭제에 실패했습니다.',
-                                    'error'
-                                    )
-                                }
-                            })
-                            //AJAX END
+                        // <td> 엘리먼트 생성
+                        var td = document.createElement("td");
+                        td.colSpan = "3";
+
+                        // 새로운 입력 필드 생성
+                        var newCategoryInput = document.createElement("input");
+                        newCategoryInput.type = "text";
+                        newCategoryInput.className = "newCate form-control";
+                        newCategoryInput.placeholder = "카테고리 이름을 입력하세요";
+
+                        // 입력 필드를 <td>에 추가
+                        td.appendChild(newCategoryInput);
+
+                        // <tr>에 <td>를 추가
+                        newRow.appendChild(td);
+
+                        // <tr>을 테이블에 추가
+                        categoryTable.appendChild(newRow);
+
+                        // 카테고리 개수 업데이트
+                        currentCategoryCount++;
+                    }else {
+                        alert("한 번에 최대 4개까지 추가 가능합니다.");
+                    }
+                });
+
+                //카테고리 추가 저장
+                newCateSaveButton.addEventListener("click", function() {
+                    var cateInputs = document.querySelectorAll(tabId + " .newCate");
+                    console.log("cateInputs:::::::"+cateInputs.length)
+                    var newCategoryNames = [];
+                    var categoryKind = addNewCategoryButton.id;
+                    console.log("categoryKind::::::"+categoryKind);
+                    cateInputs.forEach(function(input){
+                        if(input.value != null && input.value != undefined && input.value != ""){
+                            console.log("newCategoryNames::::::"+newCategoryNames.push(input.value));
                         }
                     });
-                });
-            });
 
-            //여기 바꿔야돼 공통으로 못씀 method: "POST", method: "PUT"으로 써야됨
-            // 저장 버튼 클릭 공통 로직 함수
-            function handleSaveButtonClick(tabId) {
-
-                var saveButton = document.querySelector(tabId + " .save-button");
-
-                saveButton.addEventListener("click", function() {
-
-                    // 탭에 따른 데이터 처리 로직
-                    var newCate = document.querySelector(tabId + " .newCate");
-                    var changedInputs = document.querySelectorAll(tabId + " .KindName[data-changed='true']");
-
-                    // 값 배열에 담기
-                    var inputSeq = [];
-                    var inputValue = [];
-
-                    changedInputs.forEach(function(input) {
-                        var KindSeq = input.id;
-                        var KindValue = input.value;
-
-                        inputSeq.push(KindSeq);
-                        inputValue.push(KindValue);
-                    });
-
-                    var newCateValue = newCate.value;
-
-                    if (!newCateValue && inputValue.length === 0) {
-                        Swal.fire('등록하실 카테고리 이름을 입력해주세요.');
-                        return;
-                    }
-
-                    if (newCateValue) {
-                        inputSeq.push(newCate.id); // 새로운 카테고리인 경우 "faq_newCate" 값을 추가
-                        inputValue.push(newCateValue);
-                    }
-
-                    // 데이터 객체 생성
+                    //JSON
                     var data = {
-                        inputSeq: inputSeq,
-                        inputValue: inputValue
+                        categoryKind: categoryKind,
+                        newCategoryNames: newCategoryNames
                     };
 
                     var jsonData = JSON.stringify(data);
 
-                    // AJAX 요청으로 서버에 데이터 전송
+                    //AJAX로 데이터 전달
                     fetch("/admin/category", {
                         method: "POST",
                         headers: {
@@ -180,26 +145,18 @@
                             }).then(() => {
                                  window.location.reload();
                             })
+                        }else if(data.statusCode === 401){
+                            alert(JSON.stringify(data.body))
                         }else {
                             Swal.fire('처리 실패했습니다.');
                         }
                     })
-                });
-            }
+
+                })
+
+            }//END handleAddNewCategory
 
 
-            // tabId
-            var tabSelector = [
-                "#user-tab-pane",
-                "#post-tab-pane",
-                "#faq-tab-pane",
-                "#question-tab-pane"
-            ]
-
-            tabSelector.forEach(function(tabSelector){
-                handleAddNewCategory(tabSelector);
-                handleSaveButtonClick(tabSelector);
-            });
 
         });
     </script>
@@ -209,7 +166,7 @@
     <h3>카테고리 관리</h3><br>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="user-tab" data-bs-toggle="tab" data-bs-target="#user-tab-pane" type="button" role="tab" aria-controls="user-tab-pane" aria-selected="true">회원 신고</button>
+            <button class="nav-link active" id="user-tab-paen" data-bs-toggle="tab" data-bs-target="#user-tab-pane" type="button" role="tab" aria-controls="user-tab-pane" aria-selected="true">회원 신고</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="post-tab" data-bs-toggle="tab" data-bs-target="#post-tab-pane" type="button" role="tab" aria-controls="post-tab-pane" aria-selected="false">게시물 신고</button>
@@ -225,12 +182,19 @@
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="user-tab-pane" role="tabpanel" aria-labelledby="user-tab" tabindex="0">
             <div class="container surround">
-                <a href="#" class="clickable-text" id="user">+새카테고리 추가</a><br>
+                <a href="#" class="clickable-text" id="user">+새카테고리 추가</a>
                 <div class="tableBox">
                     <table>
-                        <tr>
-                            <td colspan="3"><input type="text" class="newCate form-control" id="user_newCate" placeholder="카테고리 이름을 입력하세요" hidden="hidden"></td>
-                        </tr>
+
+                    </table>
+                </div>
+                <div class="buttonBox">
+                    <button type="button" class="newCate-save-button btn btn-primary" hidden="hidden">저장</button>
+                </div>
+                <hr>
+                <div class="cateListBox">
+                    <h5>» 카테고리 목록</h5>
+                    <table>
                         <tr th:each="cateList : ${cateListU}">
                             <td><input type="text" class="KindName form-control" th:value="${cateList.userClaimKindName}" th:id="'user_' + ${cateList.userClaimKindSeq}" readonly></td>
                             <td><button type="button" class="modify-button btn btn-outline-warning" th:data-id="'user_' + ${cateList.userClaimKindSeq}">✏️수정️</button></td>
@@ -238,7 +202,6 @@
                         </tr>
                     </table>
                 </div>
-                <br>
                 <div class="buttonBox">
                     <button type="button" class="save-button btn btn-primary">저장</button>
                 </div>
@@ -246,12 +209,19 @@
         </div>
         <div class="tab-pane fade" id="post-tab-pane" role="tabpanel" aria-labelledby="post-tab" tabindex="0">
             <div class="container surround">
-                <a href="#" class="clickable-text" id="post">+새카테고리 추가</a><br>
+                <a href="#" class="clickable-text" id="post">+새카테고리 추가</a>
                 <div class="tableBox">
                     <table>
-                        <tr>
-                            <td><input type="text" class="newCate form-control" id="post_newCate" placeholder="카테고리 이름을 입력하세요" hidden="hidden"></td>
-                        </tr>
+
+                    </table>
+                </div>
+                <div class="buttonBox">
+                    <button type="button" class="newCate-save-button btn btn-primary">저장</button>
+                </div>
+                <hr>
+                <div class="cateListBox">
+                    <h5>» 카테고리 목록</h5>
+                    <table>
                         <tr th:each="cateList : ${cateListP}">
                             <td><input type="text" class="KindName form-control" th:value="${cateList.postClaimKindName}" th:id="'post_' + ${cateList.postClaimKindSeq}" readonly></td>
                             <td><button type="button" class="modify-button btn btn-outline-warning" th:data-id="'post_' + ${cateList.postClaimKindSeq}">✏️수정️</button></td>
@@ -259,7 +229,6 @@
                         </tr>
                     </table>
                 </div>
-                <br>
                 <div class="buttonBox">
                     <button type="button" class="save-button btn btn-primary">저장</button>
                 </div>
@@ -267,12 +236,19 @@
         </div>
         <div class="tab-pane fade" id="faq-tab-pane" role="tabpanel" aria-labelledby="faq-tab" tabindex="0">
             <div class="container surround">
-                <a href="#" class="clickable-text" id="faq">+새카테고리 추가</a><br>
+                <a href="#" class="clickable-text" id="faq">+새카테고리 추가</a>
                 <div class="tableBox">
                     <table>
-                        <tr>
-                            <td><input type="text" class="newCate form-control" id="faq_newCate" placeholder="카테고리 이름을 입력하세요" hidden="hidden"></td>
-                        </tr>
+
+                    </table>
+                </div>
+                <div class="buttonBox">
+                    <button type="button" class="newCate-save-button btn btn-primary">저장</button>
+                </div>
+                <hr>
+                <div class="cateListBox">
+                    <h5>» 카테고리 목록</h5>
+                    <table>
                         <tr th:each="cateList : ${cateListF}">
                             <td><input type="text" class="KindName form-control" th:value="${cateList.faqKindName}" th:id="'faq_' + ${cateList.faqKindSeq}" readonly></td>
                             <td><button type="button" class="modify-button btn btn-outline-warning" th:data-id="'faq_' + ${cateList.faqKindSeq}">✏️수정️</button></td>
@@ -280,7 +256,6 @@
                         </tr>
                     </table>
                 </div>
-                <br>
                 <div class="buttonBox">
                     <button type="button" class="save-button btn btn-primary">저장</button>
                 </div>
@@ -288,12 +263,19 @@
         </div>
         <div class="tab-pane fade" id="question-tab-pane" role="tabpanel" aria-labelledby="question-tab" tabindex="0">
             <div class="container surround">
-                <a href="#" class="clickable-text" id="ques">+새카테고리 추가</a><br>
+                <a href="#" class="clickable-text" id="ques">+새카테고리 추가</a>
                 <div class="tableBox">
                     <table>
-                        <tr>
-                            <td><input type="text" class="newCate form-control" id="ques_newCate" placeholder="카테고리 이름을 입력하세요" hidden="hidden"></td>
-                        </tr>
+
+                    </table>
+                </div>
+                <div class="buttonBox">
+                    <button type="button" class="newCate-save-button btn btn-primary">저장</button>
+                </div>
+                <hr>
+                <div class="cateListBox">
+                    <h5>» 카테고리 목록</h5>
+                    <table>
                         <tr th:each="cateList : ${cateListQ}">
                             <td><input type="text" class="KindName form-control" th:value="${cateList.questionKindName}" th:id="'ques_' + ${cateList.questionKindSeq}" readonly></td>
                             <td><button type="button" class="modify-button btn btn-outline-warning" th:data-id="'ques_' + ${cateList.questionKindSeq}">✏️수정️</button></td>
@@ -301,7 +283,6 @@
                         </tr>
                     </table>
                 </div>
-                <br>
                 <div class="buttonBox">
                     <button type="button" class="save-button btn btn-primary">저장</button>
                 </div>

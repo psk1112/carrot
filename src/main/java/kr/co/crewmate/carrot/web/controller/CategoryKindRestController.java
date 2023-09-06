@@ -1,14 +1,16 @@
 package kr.co.crewmate.carrot.web.controller;
 
+import jakarta.validation.Valid;
 import kr.co.crewmate.carrot.model.CommonResponse;
-import kr.co.crewmate.carrot.model.FaqKindDTO;
+import kr.co.crewmate.carrot.model.dto.CategoryConditionDTO;
 import kr.co.crewmate.carrot.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,13 +21,24 @@ public class CategoryKindRestController {
 
     /**
      * 카테고리 등록
-     * @param requestData
+     * @param categoryConditionDTO
      * @return response
      */
     @PostMapping("/category")
-    public CommonResponse createCategory(@RequestBody String requestData){
+    public CommonResponse createCategory(@Valid @RequestBody CategoryConditionDTO categoryConditionDTO, BindingResult bindingResult){
+
         CommonResponse response = new CommonResponse();
-        boolean save = categoryService.createCategory(requestData);
+
+        System.out.println(categoryConditionDTO.getCategoryKind()+":::::"+categoryConditionDTO.getNewCategoryNames().size());
+
+        if(bindingResult.hasErrors()){
+            System.out.println(bindingResult.hasErrors());
+            response.setStatusCode(401);
+            response.setBody(bindingResult.getFieldError("newCategoryNames"));
+            return response;
+        }
+
+        boolean save = categoryService.createCategory(categoryConditionDTO);
 
         if(save){
             response.setStatusCode(200);

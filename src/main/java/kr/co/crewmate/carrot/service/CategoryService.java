@@ -1,6 +1,10 @@
 package kr.co.crewmate.carrot.service;
 
-import kr.co.crewmate.carrot.model.*;
+import kr.co.crewmate.carrot.model.dto.CategoryConditionDTO;
+import kr.co.crewmate.carrot.model.entity.FaqKindEntity;
+import kr.co.crewmate.carrot.model.entity.PostClaimKindEntity;
+import kr.co.crewmate.carrot.model.entity.QuestionKindEntity;
+import kr.co.crewmate.carrot.model.entity.UserClaimKindEntity;
 import kr.co.crewmate.carrot.repository.CategoryMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -9,7 +13,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,75 +21,43 @@ public class CategoryService {
 
     private final CategoryMapper categoryMapper;
 
-    public CategoryInputInfoDTO processCategory(String requestData) {
-        String categoryKind = null;
-        String categorySeq = null;
-        String inputValue = null;
-
-        try {
-            // JSON 문자열을 JSON 객체로 파싱
-            JSONParser parser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) parser.parse(requestData);
-
-            // JSON 객체에서 원하는 필드 추출
-            JSONArray inputSeqArr = (JSONArray) jsonObject.get("inputSeq");
-            JSONArray inputValueArr = (JSONArray) jsonObject.get("inputValue");
-
-            for (int i = 0; i < inputSeqArr.size(); i++) {
-                String inputSeqAll = (String) inputSeqArr.get(i);
-                inputValue = (String) inputValueArr.get(i);
-                String[] parts = inputSeqAll.split("_");
-
-                if (parts.length > 1) {
-                    categoryKind = parts[0];   // faq_34 =>faq
-                    categorySeq = parts[1];   // faq_34 =>34
-                }
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        // CategoryInfo 객체로 묶어서 반환
-        return new CategoryInputInfoDTO(categoryKind, categorySeq, inputValue);
-    }
-
-
     /**
      * 카테고리 등록(공통)
-     * @param requestData
+     * @param categoryConditionDTO
      */
-    public boolean createCategory(String requestData){
-        CategoryInputInfoDTO categoryInfo = new CategoryInputInfoDTO();
-        String categoryKind = categoryInfo.getCategoryKind();
-        String categorySeq = categoryInfo.getCategorySeq();
-        String inputValue = categoryInfo.getInputValue();
+    public boolean createCategory(CategoryConditionDTO categoryConditionDTO){
+        String categoryKind = categoryConditionDTO.getCategoryKind();
+        List <String> categoryNames = categoryConditionDTO.getNewCategoryNames();
 
         boolean success = true;
 
-        if(categoryKind.equals("user")){ // 회원
-            if ("newCate".equals(categorySeq)) { // 새로운 카테고리인 경우
-                createUserKind(inputValue);
-                if (!createUserKind(inputValue)) {
-                    success = false;
+        switch (categoryKind) {
+            case "user" -> {  // 회원
+                for (String cateName : categoryNames) {
+                    if (!createUserKind(cateName)) {
+                        success = false;
+                    }
                 }
             }
-        } else if (categoryKind.equals("post")) { // 게시물
-            if ("newCate".equals(categorySeq)) { // 새로운 카테고리인 경우
-                createPostKind(inputValue);
-                if(!createPostKind(inputValue)){
-                    success = false;
+            case "post" -> {  // 게시물
+                for (String cateName : categoryNames) {
+                    if (!createPostKind(cateName)) {
+                        success = false;
+                    }
                 }
             }
-        } else if (categoryKind.equals("faq")) { // 자주묻는 질문
-            if ("newCate".equals(categorySeq)) { // 새로운 카테고리인 경우
-                if(!createFaqKind(inputValue)){
-                    success = false;
+            case "faq" -> {  // 자주묻는 질문
+                for (String cateName : categoryNames) {
+                    if (!createFaqKind(cateName)) {
+                        success = false;
+                    }
                 }
             }
-        } else if (categoryKind.equals("ques")) { // 문의하기
-            if ("newCate".equals(categorySeq)) { // 새로운 카테고리인 경우
-                if (!createQuestionKind(inputValue)) {
-                    success = false;
+            case "ques" -> {  // 문의하기
+                for (String cateName : categoryNames) {
+                    if (!createQuestionKind(cateName)) {
+                        success = false;
+                    }
                 }
             }
         }
@@ -99,7 +70,7 @@ public class CategoryService {
      * @param requestData
      */
     public boolean modifyCategory(String requestData){
-        CategoryInputInfoDTO categoryInfo = new CategoryInputInfoDTO();
+        CategoryConditionDTO categoryInfo = new CategoryConditionDTO();
         String categoryKind = categoryInfo.getCategoryKind();
         String categorySeq = categoryInfo.getCategorySeq();
         String inputValue = categoryInfo.getInputValue();
@@ -109,15 +80,15 @@ public class CategoryService {
         if(categoryKind.equals("user")){ // 회원
             if (!"newCate".equals(categorySeq)) {
                 // 기존 카테고리 수정
-                UserClaimKindDTO userClaimKindDTO = new UserClaimKindDTO(Integer.parseInt(categorySeq), inputValue);
-                if(!modifyUserKind(userClaimKindDTO)){
+                UserClaimKindEntity userClaimKindEntity = new UserClaimKindEntity(Integer.parseInt(categorySeq), inputValue);
+                if(!modifyUserKind(userClaimKindEntity)){
                     success = false;
                 }
             }
         } else if (categoryKind.equals("post")) { // 게시물
             if (!"newCate".equals(categorySeq)) {
                 // 기존 카테고리 수정
-                PostClaimKindDTO postClaimKindDTO = new PostClaimKindDTO(Integer.parseInt(categorySeq), inputValue);
+                PostClaimKindEntity postClaimKindDTO = new PostClaimKindEntity(Integer.parseInt(categorySeq), inputValue);
                 if (!modifyPostKind(postClaimKindDTO)){
                     success = false;
                 }
@@ -125,16 +96,16 @@ public class CategoryService {
         } else if (categoryKind.equals("faq")) { // 자주묻는 질문
             if (!"newCate".equals(categorySeq)) {
                 // 기존 카테고리 수정
-                FaqKindDTO faqKindDTO = new FaqKindDTO(Integer.parseInt(categorySeq), inputValue);
-                if (!modifyFaqKind(faqKindDTO)){
+                FaqKindEntity faqKindEntity = new FaqKindEntity(Integer.parseInt(categorySeq), inputValue);
+                if (!modifyFaqKind(faqKindEntity)){
                     success = false;
                 }
             }
         } else if (categoryKind.equals("ques")) { // 문의하기
             if (!"newCate".equals(categorySeq)) {
                 // 기존 카테고리 수정
-                QuestionKindDTO questionKindDTO = new QuestionKindDTO(Integer.parseInt(categorySeq), inputValue);
-                if (!modifyQuestionKind(questionKindDTO)){
+                QuestionKindEntity questionKindEntity = new QuestionKindEntity(Integer.parseInt(categorySeq), inputValue);
+                if (!modifyQuestionKind(questionKindEntity)){
                     success = false;
                 }
             }
@@ -148,7 +119,7 @@ public class CategoryService {
      * 회원 신고 카테고리 목록 조회
      * @return List<UserClaimKindDTO>
      */
-    public List<UserClaimKindDTO> retrieveUserKindList(){
+    public List<UserClaimKindEntity> retrieveUserKindList(){
         return categoryMapper.selectUserKindList();
     }
 
@@ -158,20 +129,20 @@ public class CategoryService {
      * @param inputValue
      */
     public boolean createUserKind(String inputValue){
-        UserClaimKindDTO userClaimKindDTO = UserClaimKindDTO.builder()
+        UserClaimKindEntity userClaimKindEntity = UserClaimKindEntity.builder()
                 .userClaimKindName(inputValue)
                 .build();
-        int rowsCreate = categoryMapper.insertUserKind(userClaimKindDTO);
+        int rowsCreate = categoryMapper.insertUserKind(userClaimKindEntity);
         return rowsCreate > 0;
     }
 
 
     /**
      * 회원 신고 카테고리 수정
-     * @param userClaimKindDTO
+     * @param userClaimKindEntity
      */
-    public boolean modifyUserKind(UserClaimKindDTO userClaimKindDTO){
-        int rowsModify = categoryMapper.updateUserKind(userClaimKindDTO);
+    public boolean modifyUserKind(UserClaimKindEntity userClaimKindEntity){
+        int rowsModify = categoryMapper.updateUserKind(userClaimKindEntity);
         return rowsModify > 0;
     }
 
@@ -180,7 +151,7 @@ public class CategoryService {
      * 게시물 신고 카테고리 목록 조회
      * @return List<PostKindDTO>
      */
-    public List<PostClaimKindDTO> retrievePostKindList(){
+    public List<PostClaimKindEntity> retrievePostKindList(){
         return categoryMapper.selectPostKindList();
     }
 
@@ -190,7 +161,7 @@ public class CategoryService {
      * @param inputValue
      */
     public boolean createPostKind(String inputValue){
-        PostClaimKindDTO postClaimKindDTO = PostClaimKindDTO.builder()
+        PostClaimKindEntity postClaimKindDTO = PostClaimKindEntity.builder()
                 .postClaimKindName(inputValue)
                 .build();
         int rowsCreate = categoryMapper.insertPostKind(postClaimKindDTO);
@@ -202,7 +173,7 @@ public class CategoryService {
      * 게시물 신고 카테고리 수정
      * @param postClaimKindDTO
      */
-    public boolean modifyPostKind(PostClaimKindDTO postClaimKindDTO){
+    public boolean modifyPostKind(PostClaimKindEntity postClaimKindDTO){
         int rowsModify = categoryMapper.updatePostKind(postClaimKindDTO);
         return rowsModify > 0;
     }
@@ -212,7 +183,7 @@ public class CategoryService {
      * 자주 묻는 질문 카테고리 목록
      * @return List<FaqKindDTO>
      */
-    public List<FaqKindDTO> retrieveFaqKindList(){
+    public List<FaqKindEntity> retrieveFaqKindList(){
         return categoryMapper.selectFaqKindList();
     }
 
@@ -222,20 +193,20 @@ public class CategoryService {
      * @param inputValue
      */
     public boolean createFaqKind(String inputValue){
-        FaqKindDTO faqKindDTO = FaqKindDTO.builder()
+        FaqKindEntity faqKindEntity = FaqKindEntity.builder()
                 .faqKindName(inputValue)
                 .build();
-        int rowsCreate = categoryMapper.insertFaqKind(faqKindDTO);
+        int rowsCreate = categoryMapper.insertFaqKind(faqKindEntity);
         return rowsCreate > 0;
     }
 
 
     /**
      * 자주 묻는 질문 카테고리 수정
-     * @param faqKindDTO
+     * @param faqKindEntity
      */
-    public boolean modifyFaqKind(FaqKindDTO faqKindDTO){
-        int rowsModify = categoryMapper.updateFaqKind(faqKindDTO);
+    public boolean modifyFaqKind(FaqKindEntity faqKindEntity){
+        int rowsModify = categoryMapper.updateFaqKind(faqKindEntity);
         return rowsModify > 0;
     }
 
@@ -244,7 +215,7 @@ public class CategoryService {
      * 문의하기 카테고리 목록
      * @return List<CategoryDto>
      */
-    public List<QuestionKindDTO> retrieveQuestionKindList(){
+    public List<QuestionKindEntity> retrieveQuestionKindList(){
         return categoryMapper.selectQuestionKindList();
     }
 
@@ -254,20 +225,20 @@ public class CategoryService {
      * @param inputValue
      */
     public boolean createQuestionKind(String inputValue){
-        QuestionKindDTO questionKindDTO = QuestionKindDTO.builder()
+        QuestionKindEntity questionKindEntity = QuestionKindEntity.builder()
                 .questionKindName(inputValue)
                 .build();
-        int rowsCreate = categoryMapper.insertQuestionKind(questionKindDTO);
+        int rowsCreate = categoryMapper.insertQuestionKind(questionKindEntity);
         return rowsCreate > 0;
     }
 
 
     /**
      * 문의하기 카테고리 수정
-     * @param questionKindDTO
+     * @param questionKindEntity
      */
-    public boolean modifyQuestionKind(QuestionKindDTO questionKindDTO){
-        int rowsModify = categoryMapper.updateQuestionKind(questionKindDTO);
+    public boolean modifyQuestionKind(QuestionKindEntity questionKindEntity){
+        int rowsModify = categoryMapper.updateQuestionKind(questionKindEntity);
         return rowsModify > 0;
     }
 

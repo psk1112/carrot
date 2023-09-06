@@ -1,23 +1,17 @@
 package kr.co.crewmate.carrot.web.controller;
 
-import kr.co.crewmate.carrot.model.FaqKindDTO;
-import kr.co.crewmate.carrot.model.PostClaimKindDTO;
-import kr.co.crewmate.carrot.model.QuestionKindDTO;
-import kr.co.crewmate.carrot.model.UserClaimKindDTO;
+import kr.co.crewmate.carrot.model.entity.FaqKindEntity;
+import kr.co.crewmate.carrot.model.entity.PostClaimKindEntity;
+import kr.co.crewmate.carrot.model.entity.QuestionKindEntity;
+import kr.co.crewmate.carrot.model.entity.UserClaimKindEntity;
 import kr.co.crewmate.carrot.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,10 +26,10 @@ public class CategoryKindController {
     @GetMapping("/category")
     public String retrieveCategory(Model model) {
 
-        List<UserClaimKindDTO> cateListU = categoryService.retrieveUserKindList();
-        List<PostClaimKindDTO> cateListP = categoryService.retrievePostKindList();
-        List<FaqKindDTO> cateListF = categoryService.retrieveFaqKindList();
-        List<QuestionKindDTO> cateListQ = categoryService.retrieveQuestionKindList();
+        List<UserClaimKindEntity> cateListU = categoryService.retrieveUserKindList();
+        List<PostClaimKindEntity> cateListP = categoryService.retrievePostKindList();
+        List<FaqKindEntity> cateListF = categoryService.retrieveFaqKindList();
+        List<QuestionKindEntity> cateListQ = categoryService.retrieveQuestionKindList();
 
         model.addAttribute("cateListU", cateListU);
         model.addAttribute("cateListP", cateListP);

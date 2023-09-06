@@ -1,7 +1,7 @@
 package kr.co.crewmate.carrot.service;
 
 import com.fasterxml.jackson.core.JsonParser;
-import kr.co.crewmate.carrot.model.FaqDTO;
+import kr.co.crewmate.carrot.model.dto.FaqListResponseDTO;
 import kr.co.crewmate.carrot.repository.FaqMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +25,18 @@ public class FaqService {
 
     /**
      * 자주 묻는 질문 등록 데이터 처리 메서드
-     * @param faqDTO
+     * @param faqListResponseDTO
      */
-    public void processCreateFaq (FaqDTO faqDTO){
+    public void processCreateFaq (FaqListResponseDTO faqListResponseDTO){
 
             Date nowDate = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
             String faqCreatedAt = dateFormat.format(nowDate);
 
-            FaqDTO newFaqDTO = FaqDTO.builder()
-                    .faqKindSeq(faqDTO.getFaqKindSeq())
-                    .faqTitle(faqDTO.getFaqTitle())
-                    .faqContent(faqDTO.getFaqContent())
+        FaqListResponseDTO newFaqDTO = FaqListResponseDTO.builder()
+                    .faqKindSeq(faqListResponseDTO.getFaqKindSeq())
+                    .faqTitle(faqListResponseDTO.getFaqTitle())
+                    .faqContent(faqListResponseDTO.getFaqContent())
                     .faqCreatedAt(faqCreatedAt)
                     .build();
 
@@ -47,7 +47,7 @@ public class FaqService {
      * 자주 묻는 질문 목록
      * @return List<FaqDTO>
      */
-    public List<FaqDTO> faqList (String faqKindSeq){
+    public List<FaqListResponseDTO> faqList (String faqKindSeq){
         return faqMapper.faqList(faqKindSeq);
     }
 

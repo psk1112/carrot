@@ -1,15 +1,15 @@
-package kr.co.crewmate.carrot.model;
+package kr.co.crewmate.carrot.model.entity;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class PostClaimKindDTO {
+public class PostClaimKindEntity {
     private int postClaimKindSeq;
     private String postClaimKindName;
 
-    public PostClaimKindDTO( int postClaimKindSeq, String postClaimKindName ){
+    public PostClaimKindEntity(int postClaimKindSeq, String postClaimKindName ){
         this.postClaimKindSeq = postClaimKindSeq;
         this.postClaimKindName = postClaimKindName;
     }

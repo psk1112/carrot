@@ -3,7 +3,7 @@
 <mapper namespace="kr.co.crewmate.carrot.repository.FaqMapper">
 
     <!-- 공지사항 등록 카테고리 CRUD -->
-    <insert id="createFaq" parameterType="FaqDTO">
+    <insert id="createFaq" parameterType="FaqListResponseDTO">
         INSERT
           INTO faq ( faq_seq
                    , faq_kind_seq
@@ -19,7 +19,7 @@
                , #{faqCreatedAt} )
     </insert>
 
-    <select id="faqList" resultType="FaqDTO">
+    <select id="faqList" resultType="FaqListResponseDTO">
         SELECT @ROWNUM:=@ROWNUM+1 as rownum
              , a.faq_seq
              , a.faq_kind_seq
@@ -49,7 +49,7 @@
         </if>
     </select>
     
-    <update id="modifyFaq" parameterType="FaqDTO">
+    <update id="modifyFaq" parameterType="FaqListResponseDTO">
         UPDATE faq
            SET faq_kind_seq = #{faqKindSeq}
              , faq_title = #{faqTitle}
@@ -58,7 +58,7 @@
            AND faq_seq = #{faqSeq}
     </update>
     
-    <delete id="deleteFaq" parameterType="FaqDTO">
+    <delete id="deleteFaq" parameterType="FaqListResponseDTO">
         DELETE
           FROM faq
          WHERE 1=1

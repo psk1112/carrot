@@ -1,124 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.crewmate.carrot.repository.CategoryMapper">
-
+    
     <!-- 회원 신고 카테고리 CRUD -->
-    <insert id="insertUserKind" parameterType="UserClaimKindDTO">
+    <insert id="insertUserKind" parameterType="UserClaimKindEntity">
         INSERT
-          INTO user_claim_kind ( user_claim_kind_seq
-                               , user_claim_kind_name )
+        INTO user_claim_kind ( user_claim_kind_seq
+        , user_claim_kind_name )
         VALUES ( #{userClaimKindSeq}
-               , #{userClaimKindName} )
+        , #{userClaimKindName} )
     </insert>
-
-    <select id="selectUserKindList" resultType="UserClaimKindDTO">
+    
+    <select id="selectUserKindList" resultType="UserClaimKindEntity">
         SELECT user_claim_kind_seq
-             , user_claim_kind_name
-          FROM user_claim_kind
+        , user_claim_kind_name
+        FROM user_claim_kind
     </select>
-
-    <update id="updateUserKind" parameterType="UserClaimKindDTO">
+    
+    <update id="updateUserKind" parameterType="UserClaimKindEntity">
         UPDATE user_claim_kind
-           SET user_claim_kind_name = #{userClaimKindName}
-         WHERE 1=1
-           AND user_claim_kind_seq = #{userClaimKindSeq}
+        SET user_claim_kind_name = #{userClaimKindName}
+        WHERE 1=1
+        AND user_claim_kind_seq = #{userClaimKindSeq}
     </update>
     
-    <delete id="deleteUserKind" parameterType="UserClaimKindDTO">
+    <delete id="deleteUserKind" parameterType="UserClaimKindEntity">
         DELETE
-          FROM user_claim_kind
-         WHERE 1=1
-           AND  user_claim_kind_seq = #{userClaimKindSeq}
+        FROM user_claim_kind
+        WHERE 1=1
+        AND  user_claim_kind_seq = #{userClaimKindSeq}
     </delete>
-
-
+    
+    
     <!-- 게시물 신고 카테고리 CRUD -->
-    <insert id="insertPostKind" parameterType="PostClaimKindDTO">
+    <insert id="insertPostKind" parameterType="PostClaimKindEntity">
         INSERT
-          INTO post_claim_kind ( post_claim_kind_seq
-                               , post_claim_kind_name )
+        INTO post_claim_kind ( post_claim_kind_seq
+        , post_claim_kind_name )
         VALUES ( #{postClaimKindSeq}
-               , #{postClaimKindName} )
+        , #{postClaimKindName} )
     </insert>
-
-    <select id="selectPostKindList" resultType="PostClaimKindDTO">
+    
+    <select id="selectPostKindList" resultType="PostClaimKindEntity">
         SELECT post_claim_kind_seq
-             , post_claim_kind_name
-          FROM post_claim_kind
+        , post_claim_kind_name
+        FROM post_claim_kind
     </select>
-
-    <update id="updatePostKind" parameterType="PostClaimKindDTO">
+    
+    <update id="updatePostKind" parameterType="PostClaimKindEntity">
         UPDATE post_claim_kind
-           SET post_claim_kind_name = #{postClaimKindName}
-         WHERE 1=1
-           AND post_claim_kind_seq = #{postClaimKindSeq}
+        SET post_claim_kind_name = #{postClaimKindName}
+        WHERE 1=1
+        AND post_claim_kind_seq = #{postClaimKindSeq}
     </update>
     
-    <delete id="deletePostKind" parameterType="PostClaimKindDTO">
+    <delete id="deletePostKind" parameterType="PostClaimKindEntity">
         DELETE
-          FROM post_claim_kind
-         WHERE 1=1
-           AND  post_claim_kind_seq = #{postClaimKindSeq}
+        FROM post_claim_kind
+        WHERE 1=1
+        AND  post_claim_kind_seq = #{postClaimKindSeq}
     </delete>
-
+    
     
     <!-- FAQ 카테고리 CRUD -->
-    <insert id="insertFaqKind" parameterType="FaqKindDTO">
+    <insert id="insertFaqKind" parameterType="FaqKindEntity">
         INSERT
-          INTO faq_kind ( faq_kind_seq
-                        , faq_kind_name )
+        INTO faq_kind ( faq_kind_seq
+        , faq_kind_name )
         VALUES ( #{faqKindSeq}
-               , #{faqKindName} )
+        , #{faqKindName} )
     </insert>
-
-    <select id="selectFaqKindList" resultType="FaqKindDTO">
+    
+    <select id="selectFaqKindList" resultType="FaqKindEntity">
         SELECT DISTINCT faq_kind_seq
-             , faq_kind_name
-          FROM faq_kind
+        , faq_kind_name
+        FROM faq_kind
     </select>
-
-    <update id="updateFaqKind" parameterType="FaqKindDTO">
+    
+    <update id="updateFaqKind" parameterType="FaqKindEntity">
         UPDATE faq_kind
-           SET faq_kind_name = #{faqKindName}
-         WHERE 1=1
-           AND faq_kind_seq = #{faqKindSeq}
+        SET faq_kind_name = #{faqKindName}
+        WHERE 1=1
+        AND faq_kind_seq = #{faqKindSeq}
     </update>
     
-    <delete id="deleteFaqKind" parameterType="FaqKindDTO">
+    <delete id="deleteFaqKind" parameterType="FaqKindEntity">
         DELETE
-          FROM faq_kind
-         WHERE 1=1
-           AND  faq_kind_seq = #{faqKindSeq}
+        FROM faq_kind
+        WHERE 1=1
+        AND  faq_kind_seq = #{faqKindSeq}
     </delete>
     
     
     <!-- 문의하기 카테고리 CRUD -->
-    <insert id="insertQuestionKind" parameterType="QuestionKindDTO">
+    <insert id="insertQuestionKind" parameterType="QuestionKindEntity">
         INSERT
-          INTO question_kind ( question_kind_seq
-                             , question_kind_name )
+        INTO question_kind ( question_kind_seq
+        , question_kind_name )
         VALUES ( #{questionKindSeq}
-               , #{questionKindName} )
+        , #{questionKindName} )
     </insert>
     
-    <select id="selectQuestionKindList" resultType="QuestionKindDTO">
+    <select id="selectQuestionKindList" resultType="QuestionKindEntity">
         SELECT question_kind_seq
-             , question_kind_name
-          FROM question_kind
+        , question_kind_name
+        FROM question_kind
     </select>
     
-    <update id="updateQuestionKind" parameterType="QuestionKindDTO">
+    <update id="updateQuestionKind" parameterType="QuestionKindEntity">
         UPDATE question_kind
-           SET question_kind_name = #{questionKindName}
-         WHERE 1=1
-           AND question_kind_seq = #{questionKindSeq}
+        SET question_kind_name = #{questionKindName}
+        WHERE 1=1
+        AND question_kind_seq = #{questionKindSeq}
     </update>
     
-    <delete id="deleteQuestionKind" parameterType="QuestionKindDTO">
+    <delete id="deleteQuestionKind" parameterType="QuestionKindEntity">
         DELETE
-          FROM question_kind
-         WHERE 1=1
-           AND  question_kind_seq = #{questionKindSeq}
+        FROM question_kind
+        WHERE 1=1
+        AND  question_kind_seq = #{questionKindSeq}
     </delete>
     
 </mapper>
