@@ -2,6 +2,7 @@ package kr.co.crewmate.carrot.web.controller;
 
 import jakarta.validation.Valid;
 import kr.co.crewmate.carrot.model.CommonResponse;
+import kr.co.crewmate.carrot.model.form.FaqCreateForm;
 import kr.co.crewmate.carrot.model.form.FaqDeleteForm;
 import kr.co.crewmate.carrot.service.CategoryKindService;
 import kr.co.crewmate.carrot.service.FaqService;
@@ -20,35 +21,35 @@ public class FaqRestController {
     private final FaqService faqService;
     private final CategoryKindService categoryKindService;
 
-//    /**
-//     * 자주 묻는 질문 등록
-//     * @param faqDTO
-//     * @param bindingResult
-//     * @return
-//     */
-//    @PostMapping("/faq")
-//    public ResponseEntity<String> saveData (@Valid @ModelAttribute FaqDTO faqDTO, BindingResult bindingResult){
-//
-//        System.out.println(faqDTO.getFaqKindSeq()+"::::"+faqDTO.getFaqTitle()+":::"+ faqDTO.getFaqContent());
-//
-//        if(bindingResult.hasErrors()){
-//            return ResponseEntity.badRequest().body("입력값이 올바르지 않습니다.");
-//            public String saveData(@Valid FaqDTO faqDTO, BindingResult bindingResult, Model model) {
-//
-//                System.out.println(faqDTO.getFaqKindSeq()+"::::::::"+faqDTO.getFaqTitle()+"::::::::"+faqDTO.getFaqContent());
-//
-//                if (bindingResult.hasErrors()) {
-//                    List<FaqKindDTO> faqKind = categoryService.retrieveFaqKind();
-//                    model.addAttribute("faqKind", faqKind);
-//                    return "faq/write";
-//                }
-//                faqService.processCreateFaq(faqDTO);
-//                return "redirect:/faq/list";
-//
-//                faqService.processCreateFaq(faqDTO);
-//                return ResponseEntity.ok("성공적으로 저장되었습니다.");
-//            }
-//
+    /**
+     * 자주 묻는 질문 등록
+     * @param faqCreateForm
+     * @return
+     */
+    @PostMapping("/faq")
+    public CommonResponse createFaq (@RequestBody @Valid FaqCreateForm faqCreateForm, BindingResult bindingResult){
+
+        CommonResponse response = new CommonResponse();
+        if(bindingResult.hasErrors()) {
+            response.setStatusCode(401);
+
+            //bindingResult.getFieldError 분기처리 해줘야될거 같음
+            //한개씩 안했을 수도 있지만 둘다 안쓰거나 셋다 안할떄도 있자나.. 근데 같이 나오려나?
+            //이거 여기서 안되니까 내일 수정해
+            response.setBody(bindingResult.getFieldError("faqKindSeq").getDefaultMessage());
+            response.setBody(bindingResult.getFieldError("faqTitle").getDefaultMessage());
+            response.setBody(bindingResult.getFieldError("faqContent").getDefaultMessage());
+            return response;
+        }
+            boolean save = faqService.createFaq(faqCreateForm);
+            if(save){
+                response.setStatusCode(200);
+            }else{
+                response.setStatusCode(400);
+            }
+            return response;
+        }
+
             @DeleteMapping("/faq")
             public CommonResponse deleteFaq(@RequestBody FaqDeleteForm faqDeleteForm){
                 CommonResponse response = new CommonResponse();

@@ -10,7 +10,7 @@ import java.util.List;
 public interface FaqMapper {
 
     //자주묻는 질문 CRUD
-    void createFaq (FaqListResponseDTO faqListResponseDTO);
+    int insertFaq (FaqListResponseDTO faqListResponseDTO);
     List<FaqListResponseDTO> selectFaqList ();
     int selectFaqListCount ();
     int deleteFaq (int faqSeq);

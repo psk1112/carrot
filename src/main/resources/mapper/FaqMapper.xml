@@ -3,7 +3,7 @@
 <mapper namespace="kr.co.crewmate.carrot.repository.FaqMapper">
 
     <!-- 공지사항 등록 카테고리 CRUD -->
-    <insert id="createFaq" parameterType="FaqListResponseDTO">
+    <insert id="insertFaq" parameterType="FaqListResponseDTO">
         INSERT
           INTO faq ( faq_seq
                    , faq_kind_seq

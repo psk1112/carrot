@@ -24,12 +24,13 @@ public class CategoryKindRestController {
     @PostMapping("/category")
     public CommonResponse createCategory(@RequestBody @Valid CategoryCreateForm categoryCreateForm, BindingResult bindingResult) {
         CommonResponse response = new CommonResponse();
+
         if (bindingResult.hasErrors()) {
             response.setStatusCode(401);
-            response.setBody(bindingResult.getFieldError("newCategoryNames"));
+            response.setBody(bindingResult.getFieldError("newCategoryNames").getDefaultMessage());
             return response;
         } else {
-            boolean save = this.categoryKindService.createCategory(categoryCreateForm);
+            boolean save = categoryKindService.createCategory(categoryCreateForm);
             if (save) {
                 response.setStatusCode(200);
             } else {
@@ -46,15 +47,15 @@ public class CategoryKindRestController {
      * @return response
      */
     @PutMapping("/category")
-    public CommonResponse modifyCategory(@RequestBody CategoryModifyForm categoryModifyForm, BindingResult bindingResult) {
+    public CommonResponse modifyCategory(@RequestBody @Valid CategoryModifyForm categoryModifyForm, BindingResult bindingResult) {
         CommonResponse response = new CommonResponse();
 
         if (bindingResult.hasErrors()) {
             response.setStatusCode(401);
-            response.setBody(bindingResult.getFieldError("categoryName"));
+            response.setBody(bindingResult.getFieldError("categoryName").getDefaultMessage());
             return response;
         } else {
-            boolean save = this.categoryKindService.modifyCategory(categoryModifyForm);
+            boolean save = categoryKindService.modifyCategory(categoryModifyForm);
             if (save) {
                 response.setStatusCode(200);
             } else {
@@ -72,9 +73,9 @@ public class CategoryKindRestController {
      * @return redirect:/category/create
      */
     @DeleteMapping("/category")
-    public CommonResponse deleteCategory(@RequestBody CategoryDeleteForm categoryDeleteForm) {
+    public CommonResponse deleteCategory(@RequestBody @Valid CategoryDeleteForm categoryDeleteForm) {
         CommonResponse response = new CommonResponse();
-        boolean deleted = this.categoryKindService.deleteCategory(categoryDeleteForm);
+        boolean deleted = categoryKindService.deleteCategory(categoryDeleteForm);
         if (deleted) {
             response.setStatusCode(200);
         } else {

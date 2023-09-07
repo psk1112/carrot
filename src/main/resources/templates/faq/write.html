@@ -36,6 +36,7 @@
                  var faqKindSeq = document.getElementById("faqKindSeq").value;
                  var faqTitle = document.getElementById("faqTitle").value;
                  var faqContent = document.getElementById("faqContent").value;
+                 console.log(faqContent);
 
                  var data = {
                     faqKindSeq: faqKindSeq,
@@ -43,33 +44,29 @@
                     faqContent: faqContent
                 };
 
+                var jsonData = JSON.stringify(data)
                 // 서버로 POST 요청을 보냄
-                fetch('/faq/saveData', {
+                fetch('/admin/faq', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: jsonData
                 })
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (data) {
-                    if (data.status === "success"){
+                .then(response => response.json())
+                .then(data => {
+                    if (data.statusCode === 200){
                         Swal.fire({
-                            text: '성공적으로 저장되었습니다.',
+                            text: '자주 묻는 질문 등록을 완료했습니다.',
                             icon: 'success',
                             confirmButtonText: '확인'
+                        }).then(() => {
+                            window.location.href = "/admin/faq";
                         })
+                    }else if(data.statusCode === 401){
+                        Swal.fire(data.body);
                     }else {
-                        if (data.message.faqTitle) {
-                            var faqTitleError = document.getElementById("faqTitleError");
-                                faqTitleError.textContent = data.message.faqTitle;
-                        }
-                        if (data.message.faqContent) {
-                            var faqContentError = document.getElementById("faqContentError");
-                                faqContentError.textContent = data.message.faqContent;
-                        }
+                        Swal.fire('자주 묻는 질문 등록을 실패했습니다.');
                     }
                 })
             });
@@ -82,29 +79,24 @@
     <div class="card" style="width: 50rem;">
         <div class="card-body">
             <h1 class="card-title">자주 묻는 질문 등록</h1><br>
-            <form th:object="${faqDTO}" th:action="@{/faq/saveData}" method="post">
                 <div class="mb-3">
-                    <label th:for="faqKindSeq" class="col-form-label">구분:</label>
-                    <select class="form-select" th:field="*{faqKindSeq}" aria-label="faqKindSelector">
+                    <label for="faqKindSeq" class="col-form-label">구분:</label>
+                    <select class="form-select" id="faqKindSeq" name="faqKindSeq" aria-label="faqKindSelector">
                         <option th:each="faqNm : ${faqKind}" th:value="${faqNm.faqKindSeq}" th:text="${faqNm.faqKindName}"></option>
                     </select>
-                    <p th:if="${#fields.hasErrors('faqKindSeq')}" th:errors="*{faqKindSeq}" class="text-danger"></p>
                 </div>
                 <div class="mb-3">
-                    <label th:for="faqTitle" class="col-form-label">제목:</label>
-                    <input th:field="*{faqTitle}" type="text" class="form-control" >
-                    <p th:if="${#fields.hasErrors('faqTitle')}" th:errors="*{faqTitle}" class="text-danger"></p>
+                    <label for="faqTitle" class="col-form-label">제목:</label>
+                    <input id="faqTitle" name="faqTitle" type="text" class="form-control" >
                 </div>
                 <div class="mb-3">
-                    <label th:for="faqContent" class="col-form-label">내용:</label>
-                    <textarea th:field="*{faqContent}" rows="6" class="form-control" ></textarea>
-                    <p th:if="${#fields.hasErrors('faqContent')}" th:errors="*{faqContent}" class="text-danger"></p>
-                </div>
+                    <label for="faqContent" class="col-form-label">내용:</label>
+                    <textarea id="faqContent" name="faqContent" rows="6" class="form-control" ></textarea>
+                 </div>
                 <div class="mb-3 btnDiv">
                     <button type="button" class="btn btn-secondary" id="cancel-button">취소</button>
-                    <button type="submit" class="btn btn-warning" id="save-button">저장</button>
+                    <button type="button" class="btn btn-warning" id="save-button">저장</button>
                 </div>
-            </form>
         </div>
     </div>
 </div>

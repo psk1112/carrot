@@ -2,6 +2,7 @@ package kr.co.crewmate.carrot.service;
 
 import com.fasterxml.jackson.core.JsonParser;
 import kr.co.crewmate.carrot.model.dto.FaqListResponseDTO;
+import kr.co.crewmate.carrot.model.form.FaqCreateForm;
 import kr.co.crewmate.carrot.model.form.FaqDeleteForm;
 import kr.co.crewmate.carrot.repository.FaqMapper;
 import lombok.Data;
@@ -25,23 +26,24 @@ public class FaqService {
     private final FaqMapper faqMapper;
 
     /**
-     * 자주 묻는 질문 등록 데이터 처리 메서드
-     * @param faqListResponseDTO
+     * 자주 묻는 질문 등록
+     * @param faqCreateForm
      */
-    public void processCreateFaq (FaqListResponseDTO faqListResponseDTO){
+    public boolean createFaq (FaqCreateForm faqCreateForm){
 
             Date nowDate = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
             String faqCreatedAt = dateFormat.format(nowDate);
 
         FaqListResponseDTO newFaqDTO = FaqListResponseDTO.builder()
-                    .faqKindSeq(faqListResponseDTO.getFaqKindSeq())
-                    .faqTitle(faqListResponseDTO.getFaqTitle())
-                    .faqContent(faqListResponseDTO.getFaqContent())
+                    .faqKindSeq(Integer.parseInt(faqCreateForm.getFaqKindSeq()))
+                    .faqTitle(faqCreateForm.getFaqTitle())
+                    .faqContent(faqCreateForm.getFaqContent())
                     .faqCreatedAt(faqCreatedAt)
                     .build();
 
-            faqMapper.createFaq(newFaqDTO);
+        int rowsCreate = faqMapper.insertFaq(newFaqDTO);
+        return rowsCreate > 0;
     }
 
     /**
