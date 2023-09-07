@@ -34,7 +34,13 @@
             deleteButtons.forEach(function(button) {
                 button.addEventListener("click", function(event) {
                     var row = event.target.closest("tr");
-                    var faqSeq = row.getAttribute("faq-seq-id");
+                    var categorySeq = row.getAttribute("faq-seq-id");
+
+                    var data = {
+                        categorySeq : categorySeq
+                    }
+
+                    var jsonData = JSON.stringify(data);
 
                     Swal.fire({
                         title: '정말로 삭제하시겠습니까?',
@@ -46,35 +52,28 @@
                         cancelButtonText: '취소'
                     }).then((result) => {
                         if (result.isConfirmed) {
-
                             // AJAX 요청으로 서버에 데이터 전송
-                            fetch("/faq/deleteData", {
-                                method: "POST",
+                            fetch("/admin/faq", {
+                                method: "DELETE",
                                 headers: {
-                                    "Content-Type": "text/plain;charset=UTF-8"
+                                    "Content-Type": "application/json;charset=UTF-8"
                                 },
-                                body: faqSeq
+                                body: jsonData
                             })
                             .then(response => response.json())
                             .then(data => {
                                 if (data.statusCode === 200) {
                                     Swal.fire({
-                                        text: '성공적으로 삭제되었습니다.',
+                                        text: '게시물 삭제를 완료했습니다.',
                                         icon: 'success',
                                         confirmButtonText: '확인'
                                     }).then(() => {
                                          window.location.reload();
                                     });
-                                } else if (data.statusCode === 403) {
-                                    Swal.fire(
-                                        '게시물 삭제에 실패했습니다.',
-                                        'error'
-                                    );
+                                } else {
+                                    Swal.fire('게시물 삭제를 실패했습니다.');
                                 }
                             })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
                             //AJAX END
                         }
                     });
@@ -104,12 +103,12 @@
 
             // 글쓰기 버튼 클릭 시
             writeButtons.addEventListener("click", function(){
-                 window.location.href = "write";
+                 window.location.href = "write-faq";
             });
 
         });
 
-<<<<<<< HEAD
+
         function selectFaqKind() {
             var faqKindSelect = document.getElementById("faqKind");
             var selectedValue = faqKindSelect.value;
@@ -153,9 +152,6 @@
                 console.error("에러: " + error);
             });
         }
-=======
-
->>>>>>> 7dfe5840f6f2250de6912e1027347a1ea7ad350c
     </script>
 </th:block>
 

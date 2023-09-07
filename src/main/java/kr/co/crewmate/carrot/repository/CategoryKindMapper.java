@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface CategoryMapper {
+public interface CategoryKindMapper {
 
     //회원 신고 카테고리 CRUD
     List<UserClaimKindEntity> selectUserKindList();
@@ -19,8 +19,8 @@ public interface CategoryMapper {
 
     //게시물 신고 카테고리 CRUD
     List<PostClaimKindEntity> selectPostKindList();
-    int insertPostKind (PostClaimKindEntity postClaimKindDTO);
-    int updatePostKind (PostClaimKindEntity postClaimKindDTO);
+    int insertPostKind (PostClaimKindEntity postClaimKindEntity);
+    int updatePostKind (PostClaimKindEntity postClaimKindEntity);
 
 
     //자주 묻는 질문 카테고리 CRUD
@@ -35,8 +35,8 @@ public interface CategoryMapper {
     int updateQuestionKind (QuestionKindEntity questionKindEntity);
 
     //삭제
-    int deleteUserKind (int seq);
-    int deletePostKind (int seq);
-    int deleteFaqKind (int seq);
-    int deleteQuestionKind (int seq);
+    int deleteUserKind (UserClaimKindEntity userClaimKindEntity);
+    int deletePostKind (PostClaimKindEntity postClaimKindEntity);
+    int deleteFaqKind (FaqKindEntity faqKindEntity);
+    int deleteQuestionKind (QuestionKindEntity questionKindEntity);
 }

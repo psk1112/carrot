@@ -19,7 +19,7 @@
                , #{faqCreatedAt} )
     </insert>
 
-    <select id="faqList" resultType="FaqListResponseDTO">
+    <select id="selectFaqList" resultType="FaqListResponseDTO">
         SELECT @ROWNUM:=@ROWNUM+1 as rownum
              , a.faq_seq
              , a.faq_kind_seq
@@ -38,7 +38,7 @@
         </if>
     </select>
     
-    <select id="countFaqList" resultType="int">
+    <select id="selectFaqListCount" resultType="int">
         SELECT count(*)
           FROM faq a
              , faq_kind b

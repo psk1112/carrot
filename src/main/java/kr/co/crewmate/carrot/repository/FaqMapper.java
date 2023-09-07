@@ -11,8 +11,8 @@ public interface FaqMapper {
 
     //자주묻는 질문 CRUD
     void createFaq (FaqListResponseDTO faqListResponseDTO);
-    List<FaqListResponseDTO> faqList (String faqKindSeq);
-    int countFaqList (String faqKindSeq);
+    List<FaqListResponseDTO> selectFaqList ();
+    int selectFaqListCount ();
     int deleteFaq (int faqSeq);
     int modifyFaq (int faqSeq);
 }

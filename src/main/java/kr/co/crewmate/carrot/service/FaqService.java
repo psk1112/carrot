@@ -2,6 +2,7 @@ package kr.co.crewmate.carrot.service;
 
 import com.fasterxml.jackson.core.JsonParser;
 import kr.co.crewmate.carrot.model.dto.FaqListResponseDTO;
+import kr.co.crewmate.carrot.model.form.FaqDeleteForm;
 import kr.co.crewmate.carrot.repository.FaqMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +48,8 @@ public class FaqService {
      * 자주 묻는 질문 목록
      * @return List<FaqDTO>
      */
-    public List<FaqListResponseDTO> faqList (String faqKindSeq){
-        return faqMapper.faqList(faqKindSeq);
+    public List<FaqListResponseDTO> retrieveFaqList (){
+        return faqMapper.selectFaqList();
     }
 
 
@@ -56,17 +57,17 @@ public class FaqService {
      * 자주 묻는 질문 목록 갯수
      * @return int
      */
-    public int countFaqList (String faqKindSeq){
-        return faqMapper.countFaqList(faqKindSeq);
+    public int retrieveFaqListCount (){
+        return faqMapper.selectFaqListCount();
     }
 
     /**
-     * 자주 묻는 질물 삭제
-     * @param faqSeq
+     * 자주 묻는 질문 삭제
+     * @param faqDeleteForm
      * @return boolean
      */
-    public boolean deleteFaq (String faqSeq){
-        int seq = Integer.parseInt(faqSeq);
+    public boolean deleteFaq (FaqDeleteForm faqDeleteForm){
+        int seq = Integer.parseInt(faqDeleteForm.getCategorySeq());
         int deleteFaqCnt = faqMapper.deleteFaq(seq);
         return deleteFaqCnt > 0;
     }

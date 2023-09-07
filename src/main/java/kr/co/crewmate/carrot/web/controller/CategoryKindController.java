@@ -4,7 +4,7 @@ import kr.co.crewmate.carrot.model.entity.FaqKindEntity;
 import kr.co.crewmate.carrot.model.entity.PostClaimKindEntity;
 import kr.co.crewmate.carrot.model.entity.QuestionKindEntity;
 import kr.co.crewmate.carrot.model.entity.UserClaimKindEntity;
-import kr.co.crewmate.carrot.service.CategoryService;
+import kr.co.crewmate.carrot.service.CategoryKindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class CategoryKindController {
-    private final CategoryService categoryService;
+    private final CategoryKindService categoryKindService;
 
     /**
      * 카테고리 조회(양식)
@@ -26,10 +26,10 @@ public class CategoryKindController {
     @GetMapping("/category")
     public String retrieveCategory(Model model) {
 
-        List<UserClaimKindEntity> cateListU = categoryService.retrieveUserKindList();
-        List<PostClaimKindEntity> cateListP = categoryService.retrievePostKindList();
-        List<FaqKindEntity> cateListF = categoryService.retrieveFaqKindList();
-        List<QuestionKindEntity> cateListQ = categoryService.retrieveQuestionKindList();
+        List<UserClaimKindEntity> cateListU = categoryKindService.retrieveUserKindList();
+        List<PostClaimKindEntity> cateListP = categoryKindService.retrievePostKindList();
+        List<FaqKindEntity> cateListF = categoryKindService.retrieveFaqKindList();
+        List<QuestionKindEntity> cateListQ = categoryKindService.retrieveQuestionKindList();
 
         model.addAttribute("cateListU", cateListU);
         model.addAttribute("cateListP", cateListP);

@@ -2,86 +2,85 @@ package kr.co.crewmate.carrot.web.controller;
 
 import jakarta.validation.Valid;
 import kr.co.crewmate.carrot.model.CommonResponse;
-import kr.co.crewmate.carrot.model.dto.CategoryConditionDTO;
-import kr.co.crewmate.carrot.service.CategoryService;
+import kr.co.crewmate.carrot.model.form.CategoryCreateForm;
+import kr.co.crewmate.carrot.model.form.CategoryDeleteForm;
+import kr.co.crewmate.carrot.model.form.CategoryModifyForm;
+import kr.co.crewmate.carrot.service.CategoryKindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class CategoryKindRestController {
-    private final CategoryService categoryService;
+    private final CategoryKindService categoryKindService;
 
     /**
      * 카테고리 등록
-     * @param categoryConditionDTO
+     * @param categoryCreateForm
      * @return response
      */
     @PostMapping("/category")
-    public CommonResponse createCategory(@Valid @RequestBody CategoryConditionDTO categoryConditionDTO, BindingResult bindingResult){
-
+    public CommonResponse createCategory(@RequestBody @Valid CategoryCreateForm categoryCreateForm, BindingResult bindingResult) {
         CommonResponse response = new CommonResponse();
-
-        System.out.println(categoryConditionDTO.getCategoryKind()+":::::"+categoryConditionDTO.getNewCategoryNames().size());
-
-        if(bindingResult.hasErrors()){
-            System.out.println(bindingResult.hasErrors());
+        if (bindingResult.hasErrors()) {
             response.setStatusCode(401);
             response.setBody(bindingResult.getFieldError("newCategoryNames"));
             return response;
-        }
+        } else {
+            boolean save = this.categoryKindService.createCategory(categoryCreateForm);
+            if (save) {
+                response.setStatusCode(200);
+            } else {
+                response.setStatusCode(400);
+            }
 
-        boolean save = categoryService.createCategory(categoryConditionDTO);
-
-        if(save){
-            response.setStatusCode(200);
-        }else {
-            response.setStatusCode(400);
+            return response;
         }
-        return response;
     }
 
     /**
      * 카테고리 수정
-     * @param requestData
+     * @param categoryModifyForm
      * @return response
      */
     @PutMapping("/category")
-    public CommonResponse modifyCategory(@RequestBody String requestData){
+    public CommonResponse modifyCategory(@RequestBody CategoryModifyForm categoryModifyForm, BindingResult bindingResult) {
         CommonResponse response = new CommonResponse();
-        boolean save = categoryService.modifyCategory(requestData);
 
-        if(save){
-            response.setStatusCode(200);
-        }else {
-            response.setStatusCode(400);
+        if (bindingResult.hasErrors()) {
+            response.setStatusCode(401);
+            response.setBody(bindingResult.getFieldError("categoryName"));
+            return response;
+        } else {
+            boolean save = this.categoryKindService.modifyCategory(categoryModifyForm);
+            if (save) {
+                response.setStatusCode(200);
+            } else {
+                response.setStatusCode(400);
+            }
         }
+
         return response;
     }
 
     /**
      * 카테고리 삭제
      *
-     * @param inputSeq
+     * @param categoryDeleteForm
      * @return redirect:/category/create
      */
     @DeleteMapping("/category")
-    public CommonResponse deleteData(@RequestBody String inputSeq) {
+    public CommonResponse deleteCategory(@RequestBody CategoryDeleteForm categoryDeleteForm) {
         CommonResponse response = new CommonResponse();
-        boolean deleted = categoryService.deleteCategory(inputSeq);
-
+        boolean deleted = this.categoryKindService.deleteCategory(categoryDeleteForm);
         if (deleted) {
             response.setStatusCode(200);
-        }else {
+        } else {
             response.setStatusCode(400);
         }
         return response;
     }
+
 }
