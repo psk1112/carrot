@@ -1,9 +1,6 @@
 package kr.co.crewmate.carrot.web.controller;
 
-import kr.co.crewmate.carrot.model.entity.FaqKindEntity;
-import kr.co.crewmate.carrot.model.entity.PostClaimKindEntity;
-import kr.co.crewmate.carrot.model.entity.QuestionKindEntity;
-import kr.co.crewmate.carrot.model.entity.UserClaimKindEntity;
+import kr.co.crewmate.carrot.model.entity.*;
 import kr.co.crewmate.carrot.service.CategoryKindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,17 +23,19 @@ public class CategoryKindController {
     @GetMapping("/category")
     public String retrieveCategory(Model model) {
 
-        List<UserClaimKindEntity> cateListU = categoryKindService.retrieveUserKindList();
-        List<PostClaimKindEntity> cateListP = categoryKindService.retrievePostKindList();
-        List<FaqKindEntity> cateListF = categoryKindService.retrieveFaqKindList();
-        List<QuestionKindEntity> cateListQ = categoryKindService.retrieveQuestionKindList();
+        List<UserClaimKind> cateListU = categoryKindService.retrieveUserKindList();
+        List<PostClaimKind> cateListP = categoryKindService.retrievePostKindList();
+        List<ReplyClaimKind> cateListR = categoryKindService.retrieveReplyKindList();
+        List<FaqKind> cateListF = categoryKindService.retrieveFaqKindList();
+        List<QuestionKind> cateListQ = categoryKindService.retrieveQuestionKindList();
 
         model.addAttribute("cateListU", cateListU);
         model.addAttribute("cateListP", cateListP);
+        model.addAttribute("cateListR", cateListR);
         model.addAttribute("cateListF", cateListF);
         model.addAttribute("cateListQ", cateListQ);
 
-        return "category/categoryForm";
+        return "category/categoryPage";
     }
 
 }

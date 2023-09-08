@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionKindEntity {
+public class QuestionKind {
 
     private int questionKindSeq;
     private String questionKindName;

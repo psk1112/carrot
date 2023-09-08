@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var tabSelector = [
         "#user-tab-pane",
         "#post-tab-pane",
+        "#reply-tab-pane",
         "#faq-tab-pane",
         "#question-tab-pane"
     ]
@@ -140,14 +141,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     .then(data => {
                         if (data.statusCode === 200) {
                             Swal.fire({
-                                text: '게시물 삭제를 완료했습니다.',
+                                text: '카테고리 삭제를 완료했습니다.',
                                 icon: 'success',
                                 confirmButtonText: '확인'
                             }).then(() => {
                                  window.location.reload();
                             })
                         } else {
-                            Swal.fire('게시물 삭제를 실패했습니다.');
+                            Swal.fire('카테고리 삭제를 실패했습니다.');
                         }
                     })
                     //AJAX END
@@ -220,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(data => {
                     if(data.statusCode === 200){
                         Swal.fire({
-                            text: '게시물 수정을 완료했습니다.',
+                            text: '카테고리 수정을 완료했습니다.',
                             icon: 'success',
                             confirmButtonText: '확인'
                         }).then(() => {
@@ -229,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     }else if(data.statusCode === 401){
                         Swal.fire(data.body)
                     }else {
-                        Swal.fire('게시물 수정을 실패했습니다.');
+                        Swal.fire('카테고리 수정을 실패했습니다.');
                     }
                 })
                 //AJAX END

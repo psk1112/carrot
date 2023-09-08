@@ -1,18 +1,14 @@
 package kr.co.crewmate.carrot.web.controller;
 
 
-import jakarta.validation.Valid;
-import kr.co.crewmate.carrot.model.CommonResponse;
 import kr.co.crewmate.carrot.model.dto.FaqListResponseDTO;
-import kr.co.crewmate.carrot.model.entity.FaqEntity;
-import kr.co.crewmate.carrot.model.entity.FaqKindEntity;
+import kr.co.crewmate.carrot.model.entity.Faq;
+import kr.co.crewmate.carrot.model.entity.FaqKind;
 import kr.co.crewmate.carrot.service.CategoryKindService;
 import kr.co.crewmate.carrot.service.FaqService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,11 +22,11 @@ public class FaqController {
     private final CategoryKindService categoryKindService;
 
     @GetMapping("/faq")
-    public String retrieveFaq(Model model){
+    public String retrieveFaq(@RequestParam (name = "seq", required = false) String faqKindSeq, Model model){
 
-        List<FaqListResponseDTO> faqList = faqService.retrieveFaqList();
+        List<FaqListResponseDTO> faqList = faqService.retrieveFaqList(faqKindSeq);
         int countList = faqService.retrieveFaqListCount();
-        List<FaqKindEntity> faqKind = categoryKindService.retrieveFaqKindList();
+        List<FaqKind> faqKind = categoryKindService.retrieveFaqKindList();
 
 
         model.addAttribute("faqDTO", new FaqListResponseDTO());
@@ -38,19 +34,28 @@ public class FaqController {
         model.addAttribute("countList", countList);
         model.addAttribute("faqKind", faqKind);
 
-        return "faq/faqForm";
+        return "faq/faqPage";
     }
 
     @GetMapping("/write-faq")
     public String faqWritePage(Model model){
 
-        List<FaqKindEntity> faqKind = categoryKindService.retrieveFaqKindList();
+        List<FaqKind> faqKind = categoryKindService.retrieveFaqKindList();
         FaqListResponseDTO faqDTO = new FaqListResponseDTO();
 
         model.addAttribute("faqDTO", faqDTO);
         model.addAttribute("faqKind", faqKind);
-        return "faq/write";
+        return "faq/faqWritePage";
     }
 
 
+    @PostMapping("/modify-faq")
+    public String faqModifyPage(@RequestBody Faq faq, Model model){
+        List<FaqKind> faqKind = categoryKindService.retrieveFaqKindList();
+        Faq faqDetail = faqService.retrieveDetailFaq(faq);
+
+        model.addAttribute("faqKind", faqKind);
+        model.addAttribute("faqDetail", faqDetail);
+        return "faq/faqModifyPage";
+    }
 }

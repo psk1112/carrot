@@ -1,0 +1,51 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/adminlayout}" xmlns="http://www.w3.org/1999/html">
+
+
+<th:block layout:fragment="css">
+    <style>
+        .btnDiv{
+            float:right;
+        }
+        .card-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh; /* 컨테이너의 높이를 조절할 수 있습니다. */
+        }
+        .card {
+            width: 50rem;
+        }
+    </style>
+</th:block>
+<div layout:fragment="content" class="container my-3 card-container">
+    <div class="card" style="width: 50rem;">
+        <div class="card-body">
+            <h1 class="card-title">자주 묻는 질문 수정</h1><br>
+            <div class="mb-3">
+                <input type="hidden" id="selectedSeq" name="selectedSeq" th:value="${faqDetail.faqKindSeq}">
+                <label for="faqKindSeq" class="col-form-label">구분:</label>
+                <select class="form-select" id="faqKindSeq" name="faqKindSeq" aria-label="faqKindSelector">
+                    <option th:each="faqNm : ${faqKind}" th:value="${faqNm.faqKindSeq}" th:text="${faqNm.faqKindName}"></option>
+                </select>
+                <div class="errordiv"></div>
+            </div>
+            <div class="mb-3">
+                <label for="faqTitle" class="col-form-label">제목:</label>
+                <input id="faqTitle" name="faqTitle" type="text" class="form-control" th:value="${faqDetail.faqTitle}">
+                <div class="errordiv"></div>
+            </div>
+            <div class="mb-3">
+                <label for="faqContent" class="col-form-label">내용:</label>
+                <textarea id="faqContent" name="faqContent" rows="6" class="form-control" th:text="${faqDetail.faqContent}" ></textarea>
+                <div class="errordiv"></div>
+            </div>
+            <div class="mb-3 btnDiv">
+                <button type="button" class="btn btn-secondary" id="cancel-button">취소</button>
+                <button type="button" class="btn btn-warning" id="save-button">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

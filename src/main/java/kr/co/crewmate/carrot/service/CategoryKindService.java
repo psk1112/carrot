@@ -1,12 +1,9 @@
 package kr.co.crewmate.carrot.service;
 
+import kr.co.crewmate.carrot.model.entity.*;
 import kr.co.crewmate.carrot.model.form.CategoryCreateForm;
 import kr.co.crewmate.carrot.model.form.CategoryDeleteForm;
 import kr.co.crewmate.carrot.model.form.CategoryModifyForm;
-import kr.co.crewmate.carrot.model.entity.FaqKindEntity;
-import kr.co.crewmate.carrot.model.entity.PostClaimKindEntity;
-import kr.co.crewmate.carrot.model.entity.QuestionKindEntity;
-import kr.co.crewmate.carrot.model.entity.UserClaimKindEntity;
 import kr.co.crewmate.carrot.repository.CategoryKindMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,6 +37,13 @@ public class CategoryKindService {
             case "post" -> {  // 게시물
                 for (String cateName : categoryNames) {
                     if (!createPostKind(cateName)) {
+                        success = false;
+                    }
+                }
+            }
+            case "reply" -> {  // 댓글
+                for (String cateName : categoryNames) {
+                    if (!createReplyKind(cateName)) {
                         success = false;
                     }
                 }
@@ -80,26 +84,32 @@ public class CategoryKindService {
 
         switch (categoryKind) {
             case "user" -> {  // 회원
-                UserClaimKindEntity userClaimKindEntity = new UserClaimKindEntity(categorySeq, categoryName);
-                if (!modifyUserKind(userClaimKindEntity)) {
+                UserClaimKind userClaimKind = new UserClaimKind(categorySeq, categoryName);
+                if (!modifyUserKind(userClaimKind)) {
                     success = false;
                 }
             }
             case "post" -> {  // 게시물
-                PostClaimKindEntity postClaimKindDTO = new PostClaimKindEntity(categorySeq, categoryName);
+                PostClaimKind postClaimKindDTO = new PostClaimKind(categorySeq, categoryName);
                 if (!modifyPostKind(postClaimKindDTO)) {
                     success = false;
                 }
             }
+            case "reply" -> {  // 댓글
+                ReplyClaimKind replyClaimKind = new ReplyClaimKind(categorySeq, categoryName);
+                if (!modifyReplyKind(replyClaimKind)) {
+                    success = false;
+                }
+            }
             case "faq" -> {  // 자주묻는 질문
-                FaqKindEntity faqKindEntity = new FaqKindEntity(categorySeq, categoryName);
-                if (!modifyFaqKind(faqKindEntity)) {
+                FaqKind faqKind = new FaqKind(categorySeq, categoryName);
+                if (!modifyFaqKind(faqKind)) {
                     success = false;
                 }
             }
             case "ques" -> {  // 문의하기
-                QuestionKindEntity questionKindEntity = new QuestionKindEntity(categorySeq, categoryName);
-                if (!modifyQuestionKind(questionKindEntity)) {
+                QuestionKind questionKind = new QuestionKind(categorySeq, categoryName);
+                if (!modifyQuestionKind(questionKind)) {
                     success = false;
                 }
             }
@@ -113,7 +123,7 @@ public class CategoryKindService {
      * 회원 신고 카테고리 목록 조회
      * @return List<UserClaimKindDTO>
      */
-    public List<UserClaimKindEntity> retrieveUserKindList(){
+    public List<UserClaimKind> retrieveUserKindList(){
         return categoryKindMapper.selectUserKindList();
     }
 
@@ -123,21 +133,21 @@ public class CategoryKindService {
      * @param cateName
      */
     public boolean createUserKind(String cateName){
-        UserClaimKindEntity userClaimKindEntity = UserClaimKindEntity.builder()
+        UserClaimKind userClaimKind = UserClaimKind.builder()
                 .userClaimKindName(cateName)
                 .build();
-        int rowsCreate = categoryKindMapper.insertUserKind(userClaimKindEntity);
+        int rowsCreate = categoryKindMapper.insertUserKind(userClaimKind);
         return rowsCreate > 0;
     }
 
 
     /**
      * 회원 신고 카테고리 수정
-     * @param userClaimKindEntity
+     * @param userClaimKind
      */
-    public boolean modifyUserKind(UserClaimKindEntity userClaimKindEntity){
+    public boolean modifyUserKind(UserClaimKind userClaimKind){
 
-        int rowsModify = categoryKindMapper.updateUserKind(userClaimKindEntity);
+        int rowsModify = categoryKindMapper.updateUserKind(userClaimKind);
         return rowsModify > 0;
     }
 
@@ -146,7 +156,7 @@ public class CategoryKindService {
      * 게시물 신고 카테고리 목록 조회
      * @return List<PostKindDTO>
      */
-    public List<PostClaimKindEntity> retrievePostKindList(){
+    public List<PostClaimKind> retrievePostKindList(){
         return categoryKindMapper.selectPostKindList();
     }
 
@@ -156,7 +166,7 @@ public class CategoryKindService {
      * @param cateName
      */
     public boolean createPostKind(String cateName){
-        PostClaimKindEntity postClaimKindDTO = PostClaimKindEntity.builder()
+        PostClaimKind postClaimKindDTO = PostClaimKind.builder()
                 .postClaimKindName(cateName)
                 .build();
         int rowsCreate = categoryKindMapper.insertPostKind(postClaimKindDTO);
@@ -168,8 +178,42 @@ public class CategoryKindService {
      * 게시물 신고 카테고리 수정
      * @param postClaimKindDTO
      */
-    public boolean modifyPostKind(PostClaimKindEntity postClaimKindDTO){
+    public boolean modifyPostKind(PostClaimKind postClaimKindDTO){
         int rowsModify = categoryKindMapper.updatePostKind(postClaimKindDTO);
+        return rowsModify > 0;
+    }
+
+
+    /**
+     * 댓글 신고 카테고리 목록 조회
+     * @return List<ReplyClaimKind>
+     */
+    public List<ReplyClaimKind> retrieveReplyKindList(){
+        return categoryKindMapper.selectReplyKindList();
+    }
+
+
+    /**
+     * 댓글 신고 카테고리 생성
+     * @param cateName
+     * @return boolean
+     */
+    public boolean createReplyKind(String cateName){
+        ReplyClaimKind replyClaimKind = ReplyClaimKind.builder()
+                .replyClaimKindName(cateName)
+                .build();
+        int rowsCreate = categoryKindMapper.insertReplyKind(replyClaimKind);
+        return rowsCreate > 0;
+    }
+
+
+    /**
+     * 댓글 신고 카테고리 수정
+     * @param replyClaimKind
+     * @return boolean
+     */
+    public boolean modifyReplyKind(ReplyClaimKind replyClaimKind){
+        int rowsModify = categoryKindMapper.updateReplyKind(replyClaimKind);
         return rowsModify > 0;
     }
 
@@ -178,7 +222,7 @@ public class CategoryKindService {
      * 자주 묻는 질문 카테고리 목록
      * @return List<FaqKindDTO>
      */
-    public List<FaqKindEntity> retrieveFaqKindList(){
+    public List<FaqKind> retrieveFaqKindList(){
         return categoryKindMapper.selectFaqKindList();
     }
 
@@ -188,20 +232,20 @@ public class CategoryKindService {
      * @param cateName
      */
     public boolean createFaqKind(String cateName){
-        FaqKindEntity faqKindEntity = FaqKindEntity.builder()
+        FaqKind faqKind = FaqKind.builder()
                 .faqKindName(cateName)
                 .build();
-        int rowsCreate = categoryKindMapper.insertFaqKind(faqKindEntity);
+        int rowsCreate = categoryKindMapper.insertFaqKind(faqKind);
         return rowsCreate > 0;
     }
 
 
     /**
      * 자주 묻는 질문 카테고리 수정
-     * @param faqKindEntity
+     * @param faqKind
      */
-    public boolean modifyFaqKind(FaqKindEntity faqKindEntity){
-        int rowsModify = categoryKindMapper.updateFaqKind(faqKindEntity);
+    public boolean modifyFaqKind(FaqKind faqKind){
+        int rowsModify = categoryKindMapper.updateFaqKind(faqKind);
         return rowsModify > 0;
     }
 
@@ -210,7 +254,7 @@ public class CategoryKindService {
      * 문의하기 카테고리 목록
      * @return List<CategoryDto>
      */
-    public List<QuestionKindEntity> retrieveQuestionKindList(){
+    public List<QuestionKind> retrieveQuestionKindList(){
         return categoryKindMapper.selectQuestionKindList();
     }
 
@@ -220,20 +264,20 @@ public class CategoryKindService {
      * @param cateName
      */
     public boolean createQuestionKind(String cateName){
-        QuestionKindEntity questionKindEntity = QuestionKindEntity.builder()
+        QuestionKind questionKind = QuestionKind.builder()
                 .questionKindName(cateName)
                 .build();
-        int rowsCreate = categoryKindMapper.insertQuestionKind(questionKindEntity);
+        int rowsCreate = categoryKindMapper.insertQuestionKind(questionKind);
         return rowsCreate > 0;
     }
 
 
     /**
      * 문의하기 카테고리 수정
-     * @param questionKindEntity
+     * @param questionKind
      */
-    public boolean modifyQuestionKind(QuestionKindEntity questionKindEntity){
-        int rowsModify = categoryKindMapper.updateQuestionKind(questionKindEntity);
+    public boolean modifyQuestionKind(QuestionKind questionKind){
+        int rowsModify = categoryKindMapper.updateQuestionKind(questionKind);
         return rowsModify > 0;
     }
 
@@ -255,31 +299,38 @@ public class CategoryKindService {
 
             switch (categoryKind) {
                 case "user" -> {
-                    UserClaimKindEntity userClaimKindEntity = UserClaimKindEntity.builder()
+                    UserClaimKind userClaimKind = UserClaimKind.builder()
                             .userClaimKindSeq(seq)
                             .build();
-                    int rowsDeleted = categoryKindMapper.deleteUserKind(userClaimKindEntity);
+                    int rowsDeleted = categoryKindMapper.deleteUserKind(userClaimKind);
                     return rowsDeleted > 0;
                 }
                 case "post" -> {
-                    PostClaimKindEntity postClaimKindEntity = PostClaimKindEntity.builder()
+                    PostClaimKind postClaimKind = PostClaimKind.builder()
                             .postClaimKindSeq(seq)
                             .build();
-                    int rowsDeleted = categoryKindMapper.deletePostKind(postClaimKindEntity);
+                    int rowsDeleted = categoryKindMapper.deletePostKind(postClaimKind);
+                    return rowsDeleted > 0;
+                }
+                case "reply" -> {
+                    ReplyClaimKind replyClaimKind = ReplyClaimKind.builder()
+                            .replyClaimKindSeq(seq)
+                            .build();
+                    int rowsDeleted = categoryKindMapper.deleteReplyKind(replyClaimKind);
                     return rowsDeleted > 0;
                 }
                 case "faq" -> {
-                    FaqKindEntity faqKindEntity = FaqKindEntity.builder()
+                    FaqKind faqKind = FaqKind.builder()
                             .faqKindSeq(seq)
                             .build();
-                    int rowsDeleted = categoryKindMapper.deleteFaqKind(faqKindEntity);
+                    int rowsDeleted = categoryKindMapper.deleteFaqKind(faqKind);
                     return rowsDeleted > 0;
                 }
                 case "ques" -> {
-                    QuestionKindEntity questionKindEntity = QuestionKindEntity.builder()
+                    QuestionKind questionKind = QuestionKind.builder()
                             .questionKindSeq(seq)
                             .build();
-                    int rowsDeleted = categoryKindMapper.deleteQuestionKind(questionKindEntity);
+                    int rowsDeleted = categoryKindMapper.deleteQuestionKind(questionKind);
                     return rowsDeleted > 0;
                 }
             }

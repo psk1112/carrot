@@ -15,20 +15,9 @@
 <th:block layout:fragment="script">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            var selectDrops = document.querySelectorAll(".select-drop");
             var modifyButtons = document.querySelectorAll(".modify-button");
             var deleteButtons = document.querySelectorAll(".delete-button");
             var writeButtons = document.getElementById("writeBtn");
-
-            // 구분 별로 자주 묻는 질문 목록을 조회
-            selectDrops.forEach(function(selectDrop) {
-                selectDrop.addEventListener("click", function(event) {
-                    var faqKindSeq = event.target.getAttribute("value");
-                    var url = '/faq/list?seq=' + faqKindSeq;
-                    window.location.href = url; // 페이지 전환
-                });
-            });
-
 
             // 삭제 버튼 클릭 시
             deleteButtons.forEach(function(button) {
@@ -86,20 +75,36 @@
                 button.addEventListener("click", function(event) {
                     var row = event.target.closest("tr");
                     var faqSeq = row.getAttribute("faq-seq-id");
+                    var data = {
+                        faqSeq : faqSeq
+                    }
+                    var jsonData = JSON.stringify(data);
 
                     //ajax
-                    fetch("/faq/modify", {
+                    fetch("/admin/modify-faq", {
                         method: "POST",
                         headers: {
-                            "Content-Type": "text/plain;charset=UTF-8"
+                            "Content-Type": "application/json;charset=UTF-8"
                         },
-                        body: faqSeq
+                        body: jsonData
                     })
+                    .then(response => response.text())
+                    .then(html => {
+                        document.body.innerHTML = html;
+                        var scriptElement = document.createElement('script');
+                            scriptElement.src = '/admin/js/faqModifyPage.js';
 
-                })
-            })
+                        // 스크립트가 로드되면 실행할 콜백 함수
+                        scriptElement.onload = function() {
+                            console.log('스크립트 로드 완료');
+                            // 이곳에서 새로운 스크립트의 함수를 호출하거나 다른 작업 수행 가능
+                        };
 
-
+                        // 스크립트 요소를 body에 추가
+                        document.body.appendChild(scriptElement);
+                    });
+                });
+            });
 
             // 글쓰기 버튼 클릭 시
             writeButtons.addEventListener("click", function(){
@@ -107,50 +112,12 @@
             });
         });
 
-
-        function selectFaqKind() {
-            var faqKindSelect = document.getElementById("faqKind");
-            var selectedValue = faqKindSelect.value;
-            var url = '/faq/list?faqKindSeq=' + selectedValue;
-            window.location.href = url; // 페이지 전환
+        function selectFaqKind(seq) {
+            var faqKindSeq = seq.getAttribute("faqSeq");
+            // 새로운 URL로 이동
+            window.location.href = "/admin/faq?seq=" + faqKindSeq;
         }
 
-        function submitForm() {
-            var faqKindSelect = document.getElementById("faqKind");
-            var faqTitleInput = document.getElementById("faqTitle");
-            var faqContentInput = document.getElementById("faqContent");
-
-
-            var formData = new FormData();
-            formData.append("faqKindSeq", faqKindSelect.value);
-            formData.append("faqTitle", faqTitleInput.value);
-            formData.append("faqContent", faqContentInput.value);
-
-                console.log(formData);
-
-            fetch("/faq/saveData", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("서버에서 오류 응답");
-                }
-                return response.text();
-            })
-            .then(data => {
-                // 성공 처리
-                console.log("성공: " + data);
-                // 모달 닫기
-                $('#exampleModal').modal('hide');
-                // 페이지 리로드 또는 필요한 작업 수행
-                // window.location.reload(); // 예: 페이지 리로드
-            })
-            .catch(error => {
-                // 에러 처리
-                console.error("에러: " + error);
-            });
-        }
     </script>
 </th:block>
 
@@ -171,11 +138,11 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="dropdown-item select-drop" th:text="'전체보기'" th:value="''" th:href="@{/faq/list}"></a>
+                            <a class="dropdown-item select-drop" th:text="'전체보기'" th:value="''" th:href="@{/admin/faq}"></a>
                         </li>
                         <li th:each="faqKind : ${faqKind}">
-                            <a class="dropdown-item select-drop" th:text="${faqKind.faqKindName}" th:value="${faqKind.faqKindSeq}" href="#"
-                               onclick="selectFaqKind('${faqKind.faqKindSeq}')"></a>
+                            <a class="dropdown-item select-drop" th:text="${faqKind.faqKindName}" th:value="${faqKind.faqKindSeq}" th:attr="faqSeq=${faqKind.faqKindSeq}"
+                               onclick="selectFaqKind(this)"></a>
                         </li>
                     </ul>
                 </div>
@@ -207,41 +174,6 @@
         </tr>
         </tbody>
     </table>
-
-    <!-- Modal START-->
-    <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-            <div class="modal-content">
-
-                <!-- 여기야!!! -->
-                <form th:action="@{/faq/saveData}" th:object="${faqDTO}" method="post">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">자주 묻는 질문 등록</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="faqKind" class="col-form-label">구분:</label>
-                            <select class="form-select" id="faqKind" aria-label="faqKindSelector">
-                                <option th:each="faqNm : ${faqKind}" th:value="${faqNm.faqKindSeq}" th:text="${faqNm.faqKindName}"></option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label th:for="faqTitle" class="col-form-label">제목:</label>
-                            <input th:field="*{faqTitle}" type="text" class="form-control" >
-                            <p th:if="${#fields.hasErrors('faqTitle')}" th:errors="*{faqTitle}"></p>
-                        </div>
-                        <div class="mb-3">
-                            <label th:for="faqContent" class="col-form-label">내용:</label>
-                            <textarea th:field="*{faqContent}" rows="6" class="form-control" ></textarea>
-                            <p th:if="${#fields.hasErrors('faqContent')}" th:errors="*{faqContent}"></p>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                        <button type="button" onclick="submitForm()" class="btn btn-warning">저장</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

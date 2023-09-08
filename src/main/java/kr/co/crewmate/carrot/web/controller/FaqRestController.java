@@ -2,6 +2,8 @@ package kr.co.crewmate.carrot.web.controller;
 
 import jakarta.validation.Valid;
 import kr.co.crewmate.carrot.model.CommonResponse;
+import kr.co.crewmate.carrot.model.dto.FaqListResponseDTO;
+import kr.co.crewmate.carrot.model.entity.FaqKind;
 import kr.co.crewmate.carrot.model.form.FaqCreateForm;
 import kr.co.crewmate.carrot.model.form.FaqDeleteForm;
 import kr.co.crewmate.carrot.service.CategoryKindService;
@@ -12,7 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,37 +34,46 @@ public class FaqRestController {
     public CommonResponse createFaq (@RequestBody @Valid FaqCreateForm faqCreateForm, BindingResult bindingResult){
 
         CommonResponse response = new CommonResponse();
-        if(bindingResult.hasErrors()) {
-            response.setStatusCode(401);
+        Map<String, String> error = new HashMap<>();
 
-            //bindingResult.getFieldError 분기처리 해줘야될거 같음
-            //한개씩 안했을 수도 있지만 둘다 안쓰거나 셋다 안할떄도 있자나.. 근데 같이 나오려나?
-            //이거 여기서 안되니까 내일 수정해
-            response.setBody(bindingResult.getFieldError("faqKindSeq").getDefaultMessage());
-            response.setBody(bindingResult.getFieldError("faqTitle").getDefaultMessage());
-            response.setBody(bindingResult.getFieldError("faqContent").getDefaultMessage());
-            return response;
-        }
+        if(bindingResult.hasErrors()) {
+            if (bindingResult.getFieldError("faqKindSeq") != null) {
+                error.put("faqKindSeq", bindingResult.getFieldError("faqKindSeq").getDefaultMessage());
+            }
+            if (bindingResult.getFieldError("faqTitle") != null) {
+                error.put("faqTitle", bindingResult.getFieldError("faqTitle").getDefaultMessage());
+            }
+            if (bindingResult.getFieldError("faqContent") != null) {
+                error.put("faqContent", bindingResult.getFieldError("faqContent").getDefaultMessage());
+            }
+            response.setStatusCode(401);
+            response.setBody(error);
+
+        }else {
             boolean save = faqService.createFaq(faqCreateForm);
-            if(save){
+            if (save) {
                 response.setStatusCode(200);
-            }else{
+            } else {
                 response.setStatusCode(400);
             }
-            return response;
         }
 
-            @DeleteMapping("/faq")
-            public CommonResponse deleteFaq(@RequestBody FaqDeleteForm faqDeleteForm){
-                CommonResponse response = new CommonResponse();
-                boolean deleted = faqService.deleteFaq(faqDeleteForm);
-                if (deleted) {
-                    response.setStatusCode(200);
-                } else {
-                    response.setStatusCode(400);
-                }
-                return response;
-            }
+        return response;
+    }
+
+    @DeleteMapping("/faq")
+    public CommonResponse deleteFaq(@RequestBody FaqDeleteForm faqDeleteForm){
+
+        CommonResponse response = new CommonResponse();
+
+        boolean deleted = faqService.deleteFaq(faqDeleteForm);
+        if (deleted) {
+            response.setStatusCode(200);
+        } else {
+            response.setStatusCode(400);
+        }
+        return response;
+    }
 
 //            @PostMapping("/modify")
 //            public String modifyForm(@RequestBody @ModelAttribute String faqSeq){

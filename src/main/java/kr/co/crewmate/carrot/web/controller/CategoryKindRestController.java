@@ -27,7 +27,7 @@ public class CategoryKindRestController {
 
         if (bindingResult.hasErrors()) {
             response.setStatusCode(401);
-            response.setBody(bindingResult.getFieldError("newCategoryNames").getDefaultMessage());
+            response.setBody(bindingResult.getFieldError("categoryNames").getDefaultMessage());
             return response;
         } else {
             boolean save = categoryKindService.createCategory(categoryCreateForm);
@@ -52,7 +52,7 @@ public class CategoryKindRestController {
 
         if (bindingResult.hasErrors()) {
             response.setStatusCode(401);
-            response.setBody(bindingResult.getFieldError("categoryName").getDefaultMessage());
+            response.setBody(bindingResult.getFieldError("categoryNames").getDefaultMessage());
             return response;
         } else {
             boolean save = categoryKindService.modifyCategory(categoryModifyForm);

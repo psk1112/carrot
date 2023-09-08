@@ -1,9 +1,6 @@
 package kr.co.crewmate.carrot.repository;
 
-import kr.co.crewmate.carrot.model.entity.FaqKindEntity;
-import kr.co.crewmate.carrot.model.entity.PostClaimKindEntity;
-import kr.co.crewmate.carrot.model.entity.QuestionKindEntity;
-import kr.co.crewmate.carrot.model.entity.UserClaimKindEntity;
+import kr.co.crewmate.carrot.model.entity.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -12,31 +9,43 @@ import java.util.List;
 public interface CategoryKindMapper {
 
     //회원 신고 카테고리 CRUD
-    List<UserClaimKindEntity> selectUserKindList();
-    int insertUserKind (UserClaimKindEntity userClaimKindEntity);
-    int updateUserKind (UserClaimKindEntity userClaimKindEntity);
+    List<UserClaimKind> selectUserKindList();
+    int insertUserKind (UserClaimKind userClaimKind);
+    int updateUserKind (UserClaimKind userClaimKind);
 
 
     //게시물 신고 카테고리 CRUD
-    List<PostClaimKindEntity> selectPostKindList();
-    int insertPostKind (PostClaimKindEntity postClaimKindEntity);
-    int updatePostKind (PostClaimKindEntity postClaimKindEntity);
+    List<PostClaimKind> selectPostKindList();
+    int insertPostKind (PostClaimKind postClaimKind);
+    int updatePostKind (PostClaimKind postClaimKind);
+
+
+    //댓글 신고 카테고리 CRUD
+    List<ReplyClaimKind> selectReplyKindList();
+
+    int insertReplyKind(ReplyClaimKind replyClaimKind);
+
+    int updateReplyKind(ReplyClaimKind replyClaimKind);
 
 
     //자주 묻는 질문 카테고리 CRUD
-    List<FaqKindEntity> selectFaqKindList();
-    int insertFaqKind (FaqKindEntity faqKindEntity);
-    int updateFaqKind (FaqKindEntity faqKindEntity);
+    List<FaqKind> selectFaqKindList();
+    int insertFaqKind (FaqKind faqKind);
+    int updateFaqKind (FaqKind faqKind);
 
 
     //문의하기 카테고리 CRUD
-    List<QuestionKindEntity> selectQuestionKindList();
-    int insertQuestionKind (QuestionKindEntity questionKindEntity);
-    int updateQuestionKind (QuestionKindEntity questionKindEntity);
+    List<QuestionKind> selectQuestionKindList();
+    int insertQuestionKind (QuestionKind questionKind);
+    int updateQuestionKind (QuestionKind questionKind);
+
+    //댓글신고 카테고리 CRUD
+
 
     //삭제
-    int deleteUserKind (UserClaimKindEntity userClaimKindEntity);
-    int deletePostKind (PostClaimKindEntity postClaimKindEntity);
-    int deleteFaqKind (FaqKindEntity faqKindEntity);
-    int deleteQuestionKind (QuestionKindEntity questionKindEntity);
+    int deleteUserKind (UserClaimKind userClaimKind);
+    int deletePostKind (PostClaimKind postClaimKind);
+    int deleteReplyKind (ReplyClaimKind replyClaimKind);
+    int deleteFaqKind (FaqKind faqKind);
+    int deleteQuestionKind (QuestionKind questionKind);
 }

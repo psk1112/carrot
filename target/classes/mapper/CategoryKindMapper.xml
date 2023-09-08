@@ -3,7 +3,7 @@
 <mapper namespace="kr.co.crewmate.carrot.repository.CategoryKindMapper">
     
     <!-- 회원 신고 카테고리 CRUD -->
-    <insert id="insertUserKind" parameterType="UserClaimKindEntity">
+    <insert id="insertUserKind" parameterType="UserClaimKind">
         INSERT
         INTO user_claim_kind ( user_claim_kind_seq
         , user_claim_kind_name )
@@ -11,20 +11,20 @@
         , #{userClaimKindName} )
     </insert>
     
-    <select id="selectUserKindList" resultType="UserClaimKindEntity">
+    <select id="selectUserKindList" resultType="UserClaimKind">
         SELECT user_claim_kind_seq
         , user_claim_kind_name
         FROM user_claim_kind
     </select>
     
-    <update id="updateUserKind" parameterType="UserClaimKindEntity">
+    <update id="updateUserKind" parameterType="UserClaimKind">
         UPDATE user_claim_kind
         SET user_claim_kind_name = #{userClaimKindName}
         WHERE 1=1
         AND user_claim_kind_seq = #{userClaimKindSeq}
     </update>
     
-    <delete id="deleteUserKind" parameterType="UserClaimKindEntity">
+    <delete id="deleteUserKind" parameterType="UserClaimKind">
         DELETE
         FROM user_claim_kind
         WHERE 1=1
@@ -33,7 +33,7 @@
     
     
     <!-- 게시물 신고 카테고리 CRUD -->
-    <insert id="insertPostKind" parameterType="PostClaimKindEntity">
+    <insert id="insertPostKind" parameterType="PostClaimKind">
         INSERT
         INTO post_claim_kind ( post_claim_kind_seq
         , post_claim_kind_name )
@@ -41,20 +41,20 @@
         , #{postClaimKindName} )
     </insert>
     
-    <select id="selectPostKindList" resultType="PostClaimKindEntity">
+    <select id="selectPostKindList" resultType="PostClaimKind">
         SELECT post_claim_kind_seq
         , post_claim_kind_name
         FROM post_claim_kind
     </select>
     
-    <update id="updatePostKind" parameterType="PostClaimKindEntity">
+    <update id="updatePostKind" parameterType="PostClaimKind">
         UPDATE post_claim_kind
         SET post_claim_kind_name = #{postClaimKindName}
         WHERE 1=1
         AND post_claim_kind_seq = #{postClaimKindSeq}
     </update>
     
-    <delete id="deletePostKind" parameterType="PostClaimKindEntity">
+    <delete id="deletePostKind" parameterType="PostClaimKind">
         DELETE
         FROM post_claim_kind
         WHERE 1=1
@@ -62,8 +62,38 @@
     </delete>
     
     
+    <!-- 댓글 신고 카테고리 CRUD -->
+    <insert id="insertReplyKind" parameterType="ReplyClaimKind">
+        INSERT
+        INTO reply_claim_kind ( reply_claim_kind_seq
+        , reply_claim_kind_name )
+        VALUES ( #{replyClaimKindSeq}
+        , #{replyClaimKindName} )
+    </insert>
+    
+    <select id="selectReplyKindList" resultType="ReplyClaimKind">
+        SELECT reply_claim_kind_seq
+        , reply_claim_kind_name
+        FROM reply_claim_kind
+    </select>
+    
+    <update id="updateReplyKind" parameterType="ReplyClaimKind">
+        UPDATE reply_claim_kind
+        SET reply_claim_kind_name = #{replyClaimKindName}
+        WHERE 1=1
+        AND reply_claim_kind_seq = #{replyClaimKindSeq}
+    </update>
+    
+    <delete id="deleteReplyKind" parameterType="ReplyClaimKind">
+        DELETE
+        FROM reply_claim_kind
+        WHERE 1=1
+        AND  reply_claim_kind_seq = #{replyClaimKindSeq}
+    </delete>
+    
+    
     <!-- FAQ 카테고리 CRUD -->
-    <insert id="insertFaqKind" parameterType="FaqKindEntity">
+    <insert id="insertFaqKind" parameterType="FaqKind">
         INSERT
         INTO faq_kind ( faq_kind_seq
         , faq_kind_name )
@@ -71,20 +101,20 @@
         , #{faqKindName} )
     </insert>
     
-    <select id="selectFaqKindList" resultType="FaqKindEntity">
+    <select id="selectFaqKindList" resultType="FaqKind">
         SELECT DISTINCT faq_kind_seq
         , faq_kind_name
         FROM faq_kind
     </select>
     
-    <update id="updateFaqKind" parameterType="FaqKindEntity">
+    <update id="updateFaqKind" parameterType="FaqKind">
         UPDATE faq_kind
         SET faq_kind_name = #{faqKindName}
         WHERE 1=1
         AND faq_kind_seq = #{faqKindSeq}
     </update>
     
-    <delete id="deleteFaqKind" parameterType="FaqKindEntity">
+    <delete id="deleteFaqKind" parameterType="FaqKind">
         DELETE
         FROM faq_kind
         WHERE 1=1
@@ -93,7 +123,7 @@
     
     
     <!-- 문의하기 카테고리 CRUD -->
-    <insert id="insertQuestionKind" parameterType="QuestionKindEntity">
+    <insert id="insertQuestionKind" parameterType="QuestionKind">
         INSERT
         INTO question_kind ( question_kind_seq
         , question_kind_name )
@@ -101,20 +131,20 @@
         , #{questionKindName} )
     </insert>
     
-    <select id="selectQuestionKindList" resultType="QuestionKindEntity">
+    <select id="selectQuestionKindList" resultType="QuestionKind">
         SELECT question_kind_seq
         , question_kind_name
         FROM question_kind
     </select>
     
-    <update id="updateQuestionKind" parameterType="QuestionKindEntity">
+    <update id="updateQuestionKind" parameterType="QuestionKind">
         UPDATE question_kind
         SET question_kind_name = #{questionKindName}
         WHERE 1=1
         AND question_kind_seq = #{questionKindSeq}
     </update>
     
-    <delete id="deleteQuestionKind" parameterType="QuestionKindEntity">
+    <delete id="deleteQuestionKind" parameterType="QuestionKind">
         DELETE
         FROM question_kind
         WHERE 1=1

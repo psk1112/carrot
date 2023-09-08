@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FaqEntity {
+public class Faq {
 
     private int faqSeq;
     private int faqKindSeq;

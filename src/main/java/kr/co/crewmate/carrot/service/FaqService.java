@@ -2,6 +2,7 @@ package kr.co.crewmate.carrot.service;
 
 import com.fasterxml.jackson.core.JsonParser;
 import kr.co.crewmate.carrot.model.dto.FaqListResponseDTO;
+import kr.co.crewmate.carrot.model.entity.Faq;
 import kr.co.crewmate.carrot.model.form.FaqCreateForm;
 import kr.co.crewmate.carrot.model.form.FaqDeleteForm;
 import kr.co.crewmate.carrot.repository.FaqMapper;
@@ -50,8 +51,8 @@ public class FaqService {
      * 자주 묻는 질문 목록
      * @return List<FaqDTO>
      */
-    public List<FaqListResponseDTO> retrieveFaqList (){
-        return faqMapper.selectFaqList();
+    public List<FaqListResponseDTO> retrieveFaqList (String faqKindSeq){
+        return faqMapper.selectFaqList(faqKindSeq);
     }
 
 
@@ -85,5 +86,9 @@ public class FaqService {
         return modifyFaqCnt > 0;
     }
 
+    public Faq retrieveDetailFaq (Faq faq){
+        int seq = faq.getFaqSeq();
+        return faqMapper.retrieveDetailFaq(seq);
+    }
 
 }

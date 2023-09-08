@@ -49,6 +49,23 @@
         </if>
     </select>
     
+    <select id="retrieveDetailFaq" resultType="Faq">
+        SELECT a.faq_seq
+        , a.faq_kind_seq
+        , b.faq_kind_name
+        , a.faq_title
+        , a.faq_content
+        , a.faq_view_count
+        , a.faq_created_at
+        FROM faq a
+        , faq_kind b
+        WHERE 1=1
+        AND a.faq_kind_seq = b.faq_kind_seq
+        <if test="faqSeq != null and faqSeq != ''">
+            AND a.faq_seq = #{faqSeq}
+        </if>
+    </select>
+    
     <update id="modifyFaq" parameterType="FaqListResponseDTO">
         UPDATE faq
            SET faq_kind_seq = #{faqKindSeq}

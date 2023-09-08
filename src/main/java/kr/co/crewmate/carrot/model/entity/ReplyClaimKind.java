@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostClaimKindEntity {
+public class ReplyClaimKind {
 
-    private int postClaimKindSeq;
-    private String postClaimKindName;
+    private int replyClaimKindSeq;
+    private String replyClaimKindName;
 }
