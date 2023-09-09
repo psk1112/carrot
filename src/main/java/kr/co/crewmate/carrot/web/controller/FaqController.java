@@ -21,11 +21,12 @@ public class FaqController {
     private final FaqService faqService;
     private final CategoryKindService categoryKindService;
 
-    @GetMapping("/faq")
-    public String retrieveFaq(@RequestParam (name = "seq", required = false) String faqKindSeq, Model model){
 
-        List<FaqListResponseDTO> faqList = faqService.retrieveFaqList(faqKindSeq);
-        int countList = faqService.retrieveFaqListCount();
+    @GetMapping("/faq")
+    public String retrieveFaq(Model model){
+
+        List<FaqListResponseDTO> faqList = faqService.retrieveFaqListAll();
+        int countList = faqService.retrieveFaqListAllCount();
         List<FaqKind> faqKind = categoryKindService.retrieveFaqKindList();
 
 
@@ -36,6 +37,23 @@ public class FaqController {
 
         return "faq/faqPage";
     }
+
+    @GetMapping("/faq/{seq}")
+    public String retrieveFaq(@PathVariable ("seq") String faqKindSeq, Model model){
+
+        List<FaqListResponseDTO> faqList = faqService.retrieveFaqList(faqKindSeq);
+        int countList = faqService.retrieveFaqListCount(faqKindSeq);
+        List<FaqKind> faqKind = categoryKindService.retrieveFaqKindList();
+
+
+        model.addAttribute("faqDTO", new FaqListResponseDTO());
+        model.addAttribute("faqList", faqList);
+        model.addAttribute("countList", countList);
+        model.addAttribute("faqKind", faqKind);
+
+        return "faq/faqPage";
+    }
+
 
     @GetMapping("/write-faq")
     public String faqWritePage(Model model){
@@ -49,10 +67,16 @@ public class FaqController {
     }
 
 
-    @PostMapping("/modify-faq")
-    public String faqModifyPage(@RequestBody Faq faq, Model model){
+    /**
+     * 자주 묻는 질문 수정 페이지
+     * @param faqSeq
+     * @param model
+     * @return
+     */
+    @GetMapping("/modify-faq/{seq}")
+    public String faqModifyPage(@PathVariable ("seq") String faqSeq ,Model model){
         List<FaqKind> faqKind = categoryKindService.retrieveFaqKindList();
-        Faq faqDetail = faqService.retrieveDetailFaq(faq);
+        Faq faqDetail = faqService.retrieveDetailFaq(faqSeq);
 
         model.addAttribute("faqKind", faqKind);
         model.addAttribute("faqDetail", faqDetail);

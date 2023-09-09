@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.crewmate.carrot.repository.FaqMapper">
 
-    <!-- 공지사항 등록 카테고리 CRUD -->
+    <!-- 자주묻는질문 등록 카테고리 CRUD -->
     <insert id="insertFaq" parameterType="FaqListResponseDTO">
         INSERT
           INTO faq ( faq_seq
@@ -19,6 +19,30 @@
                , #{faqCreatedAt} )
     </insert>
 
+    <select id="selectFaqListAll" resultType="FaqListResponseDTO">
+        SELECT @ROWNUM:=@ROWNUM+1 as rownum
+        , a.faq_seq
+        , a.faq_kind_seq
+        , b.faq_kind_name
+        , a.faq_title
+        , a.faq_content
+        , a.faq_view_count
+        , a.faq_created_at
+        FROM faq a
+        , faq_kind b
+        , (SELECT @ROWNUM:=0) R
+        WHERE 1=1
+        AND a.faq_kind_seq = b.faq_kind_seq
+    </select>
+
+    <select id="selectFaqListAllCount" resultType="int">
+        SELECT count(*)
+        FROM faq a
+        , faq_kind b
+        WHERE 1=1
+        AND a.faq_kind_seq = b.faq_kind_seq
+    </select>
+
     <select id="selectFaqList" resultType="FaqListResponseDTO">
         SELECT @ROWNUM:=@ROWNUM+1 as rownum
              , a.faq_seq
@@ -33,9 +57,7 @@
              , (SELECT @ROWNUM:=0) R
          WHERE 1=1
            AND a.faq_kind_seq = b.faq_kind_seq
-        <if test="faqKindSeq != null and faqKindSeq != ''">
            AND a.faq_kind_seq = #{faqKindSeq}
-        </if>
     </select>
     
     <select id="selectFaqListCount" resultType="int">
@@ -44,12 +66,10 @@
              , faq_kind b
          WHERE 1=1
            AND a.faq_kind_seq = b.faq_kind_seq
-        <if test="faqKindSeq != null and faqKindSeq != ''">
            AND a.faq_kind_seq = #{faqKindSeq}
-        </if>
     </select>
     
-    <select id="retrieveDetailFaq" resultType="Faq">
+    <select id="selectDetailFaq" resultType="Faq">
         SELECT a.faq_seq
         , a.faq_kind_seq
         , b.faq_kind_name
@@ -66,7 +86,7 @@
         </if>
     </select>
     
-    <update id="modifyFaq" parameterType="FaqListResponseDTO">
+    <update id="modifyFaq" parameterType="FaqModifyForm">
         UPDATE faq
            SET faq_kind_seq = #{faqKindSeq}
              , faq_title = #{faqTitle}
@@ -75,7 +95,7 @@
            AND faq_seq = #{faqSeq}
     </update>
     
-    <delete id="deleteFaq" parameterType="FaqListResponseDTO">
+    <delete id="deleteFaq" parameterType="FaqDeleteForm">
         DELETE
           FROM faq
          WHERE 1=1

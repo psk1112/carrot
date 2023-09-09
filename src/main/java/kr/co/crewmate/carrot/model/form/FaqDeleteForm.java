@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FaqDeleteForm {
 
-    private String categorySeq;
+    private String faqSeq;
 }

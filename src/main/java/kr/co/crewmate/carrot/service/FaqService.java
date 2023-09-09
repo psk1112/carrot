@@ -5,6 +5,7 @@ import kr.co.crewmate.carrot.model.dto.FaqListResponseDTO;
 import kr.co.crewmate.carrot.model.entity.Faq;
 import kr.co.crewmate.carrot.model.form.FaqCreateForm;
 import kr.co.crewmate.carrot.model.form.FaqDeleteForm;
+import kr.co.crewmate.carrot.model.form.FaqModifyForm;
 import kr.co.crewmate.carrot.repository.FaqMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,25 @@ public class FaqService {
     }
 
     /**
-     * 자주 묻는 질문 목록
+     * 자주 묻는 질문 전체 목록
+     * @return List<FaqDTO>
+     */
+    public List<FaqListResponseDTO> retrieveFaqListAll (){
+        return faqMapper.selectFaqListAll();
+    }
+
+
+    /**
+     * 자주 묻는 질문 전체 목록 갯수
+     * @return int
+     */
+    public int retrieveFaqListAllCount (){
+        return faqMapper.selectFaqListAllCount();
+    }
+
+
+    /**
+     * 자주 묻는 질문 세부 목록
      * @return List<FaqDTO>
      */
     public List<FaqListResponseDTO> retrieveFaqList (String faqKindSeq){
@@ -60,8 +79,8 @@ public class FaqService {
      * 자주 묻는 질문 목록 갯수
      * @return int
      */
-    public int retrieveFaqListCount (){
-        return faqMapper.selectFaqListCount();
+    public int retrieveFaqListCount (String faqKindSeq){
+        return faqMapper.selectFaqListCount(faqKindSeq);
     }
 
     /**
@@ -70,25 +89,27 @@ public class FaqService {
      * @return boolean
      */
     public boolean deleteFaq (FaqDeleteForm faqDeleteForm){
-        int seq = Integer.parseInt(faqDeleteForm.getCategorySeq());
-        int deleteFaqCnt = faqMapper.deleteFaq(seq);
+        int deleteFaqCnt = faqMapper.deleteFaq(faqDeleteForm);
         return deleteFaqCnt > 0;
     }
 
     /**
      * 자주 묻는 질문 수정
-     * @param faqSeq
+     * @param faqModifyForm
      * @return boolean
      */
-    public boolean modifyFaq (String faqSeq){
-        int seq = Integer.parseInt(faqSeq);
-        int modifyFaqCnt = faqMapper.modifyFaq(seq);
+    public boolean modifyFaq (FaqModifyForm faqModifyForm){
+        int modifyFaqCnt = faqMapper.modifyFaq(faqModifyForm);
         return modifyFaqCnt > 0;
     }
 
-    public Faq retrieveDetailFaq (Faq faq){
-        int seq = faq.getFaqSeq();
-        return faqMapper.retrieveDetailFaq(seq);
+    /**
+     * 자주 묻는 질문 세부 조회
+     * @param faqSeq
+     * @return Faq
+     */
+    public Faq retrieveDetailFaq (String faqSeq){
+        return faqMapper.selectDetailFaq(faqSeq);
     }
 
 }
