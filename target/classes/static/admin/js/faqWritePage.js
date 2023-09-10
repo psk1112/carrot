@@ -1,12 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var cancelButtons = document.getElementById("cancel-button");
     var saveButtons = document.getElementById("save-button");
-
-    // 취소버튼 클릭 시 페이지 이동
-    cancelButtons.addEventListener("click", function(){
-        window.location.href="/admin/faq";
-    });
-
 
     //에러메시지 표시 함수
     function displayError(fieldId, errorMessage) {
