@@ -6,16 +6,19 @@
 <th:block layout:fragment="css">
     <style>
         .btnDiv{
-            float:right;
+            text-align: right;
+            padding-right: 1rem;
         }
         .card-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 80vh; /* 컨테이너의 높이를 조절할 수 있습니다. */
+            min-height: 80vh;
         }
         .card {
             width: 50rem;
+            min-height: 60vh;
+            max-height: 60vh;
         }
     </style>
 </th:block>
@@ -25,7 +28,7 @@
 <div layout:fragment="content" class="container my-3 card-container">
     <div class="card" style="width: 50rem;">
         <div class="card-body">
-            <h1 class="card-title">자주 묻는 질문 수정</h1><br>
+            <h2 class="card-title">자주 묻는 질문 수정</h2><br>
             <input type="hidden" id="faqSeq" name="faqSeq" th:value="${faqDetail.faqSeq}">
             <div class="mb-3">
                 <input type="hidden" id="selectedSeq" name="selectedSeq" th:value="${faqDetail.faqKindSeq}">

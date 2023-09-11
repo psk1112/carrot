@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.crewmate.carrot.repository.FileMapper">
+    <insert id="insertFile" parameterType="File" useGeneratedKeys="true" keyProperty="fileSeq">
+        insert into
+            file (user_seq, file_path, file_size)
+        values
+            (#{userSeq}, #{filePath}, #{fileSize})
+    </insert>
+    
+</mapper>

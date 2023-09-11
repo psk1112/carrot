@@ -13,7 +13,7 @@ public class Question {
 
     private String questionSeq;
     private String userSeq;
-    private String  questionKindSeq;
+    private String questionKindSeq;
     private String questionTitle;
     private String questionContent;
     private String questionCreatedAt;

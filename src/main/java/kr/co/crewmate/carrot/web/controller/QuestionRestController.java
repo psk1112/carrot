@@ -6,10 +6,7 @@ import kr.co.crewmate.carrot.model.form.QuestionCreateForm;
 import kr.co.crewmate.carrot.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +19,7 @@ public class QuestionRestController {
     private final QuestionService questionService;
 
     @PostMapping("/question")
-    public CommonResponse createQuestion(@Valid @RequestBody QuestionCreateForm questionCreateForm, BindingResult bindingResult) {
+    public CommonResponse createQuestion(@Valid QuestionCreateForm questionCreateForm , BindingResult bindingResult) {
         CommonResponse response = new CommonResponse();
         Map<String, String> error = new HashMap<>();
 
@@ -37,12 +34,14 @@ public class QuestionRestController {
             response.setBody(error);
 
         } else {
-//            boolean save = questionService.createQuestion(questionCreateForm);
-//            if (save) {
-//                response.setStatusCode(200);
-//            } else {
-                response.setStatusCode(400);
-//            }
+          try {
+              questionService.createQuestion(questionCreateForm);
+              response.setStatusCode(200);
+          }catch (Exception e){
+              response.setStatusCode(500);
+          }
+
+
         }
         return response;
     }

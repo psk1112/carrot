@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.crewmate.carrot.repository.QuestionMapper">
+
+    <!-- 문의하기 카테고리 CRUD -->
+    <insert id="insertQuestion" parameterType="QuestionListResponseDTO" useGeneratedKeys="true" keyProperty="questionSeq">
+        INSERT
+          INTO question ( user_seq
+                        , question_kind_seq
+                        , question_title
+                        , question_content
+                        , question_created_at)
+        VALUES ( #{userSeq}
+               , #{questionKindSeq}
+               , #{questionTitle}
+               , #{questionContent}
+               , #{questionCreatedAt} )
+    </insert>
+
+    <insert id="insertQuestionImage" parameterType="QuestionImage">
+        INSERT
+          INTO question_image ( file_seq
+                              , question_seq )
+        VALUES ( #{fileSeq}
+               , #{questionSeq} )
+    </insert>
+    
+    <select id="selectQuestionListAll" resultType="QuestionListResponseDTO">
+        SELECT @ROWNUM:=@ROWNUM+1 as rownum
+             , a.question_seq
+             , a.user_seq
+             , b.file_seq
+             , a.question_kind_seq
+             , a.question_title
+             , a.question_content
+             , a.question_created_at
+          FROM question a
+             , file b
+        , question_image c
+        , (SELECT @ROWNUM:=0) R
+        WHERE a.user_seq = b.user_seq
+        AND a.question_seq = c.question_seq
+        AND b.file_seq = c.file_seq
+    </select>
+    
+    <select id="selectQuestionListAllCount" resultType="int">
+        SELECT count(*)
+          FROM question
+    </select>
+</mapper>
+
+

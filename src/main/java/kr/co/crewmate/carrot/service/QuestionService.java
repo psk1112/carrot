@@ -1,13 +1,18 @@
 package kr.co.crewmate.carrot.service;
 
+import kr.co.crewmate.carrot.model.dto.QuestionListResponseDTO;
 import kr.co.crewmate.carrot.model.entity.File;
+import kr.co.crewmate.carrot.model.entity.Question;
+import kr.co.crewmate.carrot.model.entity.QuestionImage;
 import kr.co.crewmate.carrot.model.form.QuestionCreateForm;
+import kr.co.crewmate.carrot.repository.FileMapper;
 import kr.co.crewmate.carrot.repository.QuestionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
@@ -20,32 +25,62 @@ import java.util.UUID;
 public class QuestionService {
 
     private final QuestionMapper questionMapper;
+    private final FileMapper fileMapper;
+
     @Value("${diskPath.commonPath}")
     private String commonPath;
 
     @Value("${diskPath.questionPath}")
     private String questionPath;
-    public void createQuestion (QuestionCreateForm questionCreateForm){
+    public void createQuestion (QuestionCreateForm questionCreateForm) {
 
-//        Date nowDate = new Date();
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-//        String faqCreatedAt = dateFormat.format(nowDate);
-//        List<MultipartFile> imageFiles = questionCreateForm.getUploadFiles();
-//
-//        createDirectory(commonPath+questionPath); // 업로드 경로에 폴더 생성
-//
-//        // 파일 업로드 처리
-//        String storedFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-//        Path filePath = Path.of(uploadPath, storedFilename);
-//        Files.write(filePath, file.getBytes());
-//
-//        for (MultipartFile file : imageFiles) {
-//            File files = File.builder()
-//                    .fileSize()
-//                    .filePath()
-//                    .userSeq()
-//                    .build();
-//        }
+        Date nowDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String questionCreatedAt = dateFormat.format(nowDate);
+        List<MultipartFile> questionFiles = questionCreateForm.getQuestionFiles();
+
+        // 질문 DB삽입
+        QuestionListResponseDTO newQuestion = new QuestionListResponseDTO();
+//            newQuestion.setUserSeq(loginInfo.getUserSeq());
+            newQuestion.setQuestionKindSeq(questionCreateForm.getQuestionKindSeq());
+            newQuestion.setQuestionTitle(questionCreateForm.getQuestionTitle());
+            newQuestion.setQuestionContent(questionCreateForm.getQuestionContent());
+            newQuestion.setQuestionCreatedAt(questionCreatedAt);
+
+            questionMapper.insertQuestion(newQuestion);
+
+        try {
+            createDirectory(commonPath + questionPath + "/" + dateFormat); // 업로드 경로에 폴더 생성
+
+            // 파일 업로드 처리
+            for (MultipartFile file : questionFiles) {
+                if(!file.isEmpty()){
+                    String storedFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                    Path filePath = Path.of(commonPath+questionPath, storedFilename);
+                    Files.write(filePath, file.getBytes());
+
+                    File saveFile = new File();
+                        saveFile.setFilePath(String.valueOf(filePath));
+                        saveFile.setFileSize((int) file.getSize());
+                        saveFile.setUserSeq(0);
+
+                        fileMapper.insertFile(saveFile);
+
+                    QuestionImage questionImage = new QuestionImage();
+                        questionImage.setFileSeq(saveFile.getFileSeq());
+                        questionImage.setQuestionSeq(newQuestion.getQuestionSeq());
+
+                        questionMapper.insertQuestionImage(questionImage);
+                }
+
+
+
+
+
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // 파일 업로드 경로에 폴더 없으면 폴더 생성
@@ -54,5 +89,13 @@ public class QuestionService {
         if (!directory.exists()) {
             directory.mkdirs();
         }
+    }
+
+    public List<Question> retrieveQuestionListAll(){
+        return questionMapper.selectQuestionListAll();
+    }
+
+    public int retrieveQuestionListAllCount(){
+        return questionMapper.selectQuestionListAllCount();
     }
 }

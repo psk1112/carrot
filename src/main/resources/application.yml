@@ -9,9 +9,9 @@ spring:
     cache: false
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/seulki
+    url: jdbc:mariadb://localhost:3306/sys
     username: root
-    password: seulki345**
+    password: seulki345
 
 
 mybatis:

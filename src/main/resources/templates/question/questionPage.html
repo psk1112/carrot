@@ -7,17 +7,18 @@
     <style>
         .btnDiv {
             text-align: right;
-            padding-right: 1rem!important;
+            padding-right: 1rem;
         }
         .card-container {
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: 80vh;
         }
         .card {
             width: 50rem;
-            min-height: 80vh;
-            max-height: 80vh;
+            min-height: 60vh;
+            max-height: 60vh;
         }
     </style>
 </th:block>
@@ -54,7 +55,7 @@
                 </div>
             </div>
             <div class="input-group mb-3">
-                <input type="file" class="form-control" id="questionFile" accept=".jpg, .jpeg, .png, .gif" multiple>
+                <input type="file" class="form-control" id="questionFiles" name="questionFiles" accept=".jpg, .jpeg, .png, .gif" multiple>
             </div>
         </div>
         <div class="btnDiv mb-3">

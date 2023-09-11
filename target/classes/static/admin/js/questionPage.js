@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     var saveButtons = document.getElementById("save-button");
-    var questionFile = document.getElementById('questionFile');
+    var questionFiles = document.getElementById('questionFiles');
     var files;
 
     // 에러 메시지 표시 함수
@@ -12,8 +12,9 @@ document.addEventListener("DOMContentLoaded", function() {
         errorDiv.appendChild(errorP);
     }
 
-    questionFile.addEventListener('change', function(event) {
-        files = questionFile.files;
+    // 파일선택 최대 10개까지
+    questionFiles.addEventListener('change', function(event) {
+        files = questionFiles.files;
 
         if (files.length > 10) {
             event.preventDefault(); // 파일 선택 취소
@@ -35,32 +36,22 @@ document.addEventListener("DOMContentLoaded", function() {
         var questionKindSeq = document.getElementById("questionKindSeq").value;
         var questionTitle = document.getElementById("questionTitle").value;
         var questionContent = document.getElementById("questionContent").value;
-        var uploadFiles = [];
+        var formData = new FormData();
 
-        if(files !== null){
-
+        if(files && files.length > 0){
             for(let i = 0; i < files.length; i++){
-                uploadFiles.push(files[i]);
+                formData.append("questionFiles", files[i]);
             }
         }
+                formData.append("questionKindSeq", questionKindSeq);
+                formData.append("questionTitle", questionTitle);
+                formData.append("questionContent", questionContent);
 
-        var data = {
-            questionKindSeq: questionKindSeq,
-            questionTitle: questionTitle,
-            questionContent: questionContent,
-            uploadFiles: uploadFiles
-        };
-
-        var jsonData = JSON.stringify(data);
-        console.log(uploadFiles);
 
         // 서버로 POST 요청을 보냄
         fetch('/user/question', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: jsonData
+            body: formData
         })
         .then(response => response.json())
         .then(data => {
@@ -70,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     icon: 'success',
                     confirmButtonText: '확인'
                 }).then(() => {
-                    window.location.href = "/admin/faq";
+                window.location.href = "/user/myQuestion";
                 })
             } else if (data.statusCode === 401) {
                 // 각 에러 메시지를 동적으로 표시

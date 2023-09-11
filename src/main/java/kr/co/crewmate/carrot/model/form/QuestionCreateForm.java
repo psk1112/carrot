@@ -15,8 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class QuestionCreateForm {
 
-    private String questionSeq;
-    private String userSeq;
+    private int questionSeq;
+    private int userSeq;
     private String questionKindSeq;
 
     @NotEmpty(message ="제목을 입력하세요.")
@@ -24,6 +24,6 @@ public class QuestionCreateForm {
 
     @NotEmpty(message ="내용을 입력하세요.")
     private String questionContent;
-    private List<MultipartFile> uploadFiles;
+    private List<MultipartFile> questionFiles;
 
 }
