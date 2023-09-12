@@ -40,8 +40,6 @@ public class QuestionRestController {
           }catch (Exception e){
               response.setStatusCode(500);
           }
-
-
         }
         return response;
     }

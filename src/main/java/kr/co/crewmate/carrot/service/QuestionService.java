@@ -2,7 +2,6 @@ package kr.co.crewmate.carrot.service;
 
 import kr.co.crewmate.carrot.model.dto.QuestionListResponseDTO;
 import kr.co.crewmate.carrot.model.entity.File;
-import kr.co.crewmate.carrot.model.entity.Question;
 import kr.co.crewmate.carrot.model.entity.QuestionImage;
 import kr.co.crewmate.carrot.model.form.QuestionCreateForm;
 import kr.co.crewmate.carrot.repository.FileMapper;
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -91,11 +91,47 @@ public class QuestionService {
         }
     }
 
-    public List<Question> retrieveQuestionListAll(){
-        return questionMapper.selectQuestionListAll();
+    public List<QuestionListResponseDTO> retrieveQuestionListAll(){
+        List<QuestionListResponseDTO> results = questionMapper.selectQuestionListAll();
+        for (QuestionListResponseDTO result : results){
+            if (result.getQuestionAnswerSeq() != 0){
+                result.setHasAnswer("답변완료");
+            } else {
+                result.setHasAnswer("미답변");
+            }
+        }
+        return results;
     }
 
     public int retrieveQuestionListAllCount(){
         return questionMapper.selectQuestionListAllCount();
+    }
+
+    public List<QuestionListResponseDTO> retrieveQuestionList(String questionKindSeq){
+        List<QuestionListResponseDTO> results = questionMapper.selectQuestionList(questionKindSeq);
+        for (QuestionListResponseDTO result : results){
+            if (result.getQuestionAnswerSeq() != 0){
+                result.setHasAnswer("답변완료");
+            } else {
+                result.setHasAnswer("미답변");
+            }
+        }
+        return results;
+    }
+
+    public int retrieveQuestionListCount(String questionKindSeq){
+        return questionMapper.selectQuestionListCount(questionKindSeq);
+    }
+
+    public QuestionListResponseDTO retrieveQuestionDetail(String questionSeq){
+        QuestionListResponseDTO questionDetails = questionMapper.selectQuestionDetail(questionSeq);
+        List<String> imageList = questionDetails.getFilePaths();
+        List<String> filePaths = new ArrayList<>();
+        for (String filePath : imageList) {
+            String path = filePath.substring(filePath.indexOf("\\question"));
+            filePaths.add(path);
+        }
+        questionDetails.setFilePaths(filePaths);
+        return questionDetails;
     }
 }

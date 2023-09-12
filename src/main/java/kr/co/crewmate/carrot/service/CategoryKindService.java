@@ -289,8 +289,6 @@ public class CategoryKindService {
     public boolean deleteCategory(CategoryDeleteForm categoryDeleteForm){
 
         String[] parts = categoryDeleteForm.getCategorySeq().split("_");
-        System.out.println(parts[0]);
-        System.out.println(parts[1]);
 
         if (parts.length > 1) {
             String categoryKind = parts[0];   // faq_34 =>faq

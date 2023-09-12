@@ -27,20 +27,19 @@
     </style>
 </th:block>
 <th:block layout:fragment="script">
-    <script src="/admin/js/adminQuestionPage.js"></script>
+<!--    <script src="/admin/js/adminQuestionPage.js"></script>-->
 </th:block>
 
 <div layout:fragment="content" class="container my-4">
     <div class="surround">
         <h3>문의하기</h3><br>
         <label>결과: </label>
-<!--        <span th:text="${countList}"></span>-->
-<!--        <button type="button" class="btn btn-warning" id="writeBtn" th:onclick="|location.href='@{/admin/write-faq}'|">글쓰기</button>-->
+        <span th:text="${questionCnt}"></span>
         <table class="table table-hover">
             <thead>
             <tr class="table-warning">
                 <th scope="col" style="width: 10%">No.</th>
-                <th scope="col" style="width: 30%">
+                <th scope="col" style="width: 20%">
                     <div class="dropdown">
                         <a class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             구분
@@ -50,37 +49,40 @@
                                 <a class="dropdown-item select-drop" th:text="'전체보기'" th:value="''" th:href="@{/admin/question}"></a>
                             </li>
                             <li th:each="questionKind : ${questionKind}">
-                                <a class="dropdown-item select-drop" th:text="${questionKind.questionKindName}" th:value="${questionKind.questionKindSeq}" th:attr="questionSeq=${questionKind.questionKindSeq}"
-                                   th:href="@{/admin/question/{seq}(seq=${questionKind.questionKindSeq})}"></a>
+                                <a class="dropdown-item select-drop" th:text="${questionKind.questionKindName}" th:value="${questionKind.questionKindSeq}"
+                                   th:attr="questionSeq=${questionKind.questionKindSeq}" th:href="@{/admin/question/{seq}(seq=${questionKind.questionKindSeq})}"></a>
                             </li>
                         </ul>
                     </div>
                 </th>
                 <th scope="col" style="width: 40%">제목</th>
                 <th scope="col" style="width: 20%">작성일</th>
+                <th scope="col" style="width: 10%">답변여부</th>
             </tr>
             </thead>
-            <tbody id="faqListTableBody">
-            <tr th:each="faqList, rowStatus : ${faqList}" th:faq-seq-id="${faqList.faqSeq}">
-                <th th:text="${faqList.rownum}"></th>
-                <td th:text="${faqList.faqKindName}"></td>
+            <tbody id="questionListTableBody">
+            <tr th:each="questionList : ${questions}" th:faq-seq-id="${questionList.questionSeq}">
+                <td th:text="${questionList.rownum}"></td>
+                <td th:text="${questionList.questionKindName}"></td>
                 <td>
                     <p>
-                        <a th:fag-title-id="faqTitleText" th:text="${faqList.faqTitle}" data-bs-toggle="collapse" th:attr="href='#faqCollapse' + ${faqList.faqSeq}" role="button" aria-expanded="false" aria-controls="faqCollapse"></a>
+                        <a th:fag-title-id="questionTitleText" th:text="${questionList.questionTitle}" data-bs-toggle="collapse"
+                           th:attr="href='#questionCollapse' + ${questionList.questionSeq}" role="button" aria-expanded="false" aria-controls="questionCollapse"></a>
                     </p>
                     <div class="row">
                         <div class="col">
-                            <div class="collapse multi-collapse" th:id="'faqCollapse' + ${faqList.faqSeq}">
-                                <div id="faqContentBox" th:faq-content-id="faqContentText" th:text="${faqList.faqContent}">
+                            <div class="collapse multi-collapse" th:id="'questionCollapse' + ${questionList.questionSeq}">
+                                <div id="questionContentBox" th:faq-content-id="questionContentText" th:text="${questionList.questionContent}">
                                 </div>
-                                <button type="button" class="btn btn-outline-warning btn-sm modify-button"
-                                        th:onclick="|location.href='@{/admin/modify-faq/{seq}(seq=${faqList.faqSeq})}'|">수정</button>
-                                <button type="button" class="btn btn-outline-danger btn-sm delete-button">삭제</button>
                             </div>
                         </div>
                     </div>
                 </td>
-                <td th:text="${faqList.faqCreatedAt}"></td>
+                <td th:text="${questionList.questionCreatedAt}"></td>
+                <td>
+                    <a th:text="${questionList.hasAnswer}"
+                       th:href="${questionList.hasAnswer == '미답변' ? '/admin/answer-question/' + questionList.questionSeq : '/admin/question/' + questionList.questionKindSeq}"></a>
+                </td>
             </tr>
             </tbody>
         </table>

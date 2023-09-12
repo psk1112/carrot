@@ -13,10 +13,11 @@ import java.util.List;
 @Mapper
 public interface QuestionMapper {
 
-    public void insertQuestion(QuestionListResponseDTO questionListResponseDTO);
-    public void insertQuestionImage(QuestionImage questionImage);
-
-    public List<Question> selectQuestionListAll();
-
-    public int selectQuestionListAllCount();
+    void insertQuestion(QuestionListResponseDTO questionListResponseDTO);
+    void insertQuestionImage(QuestionImage questionImage);
+    List<QuestionListResponseDTO> selectQuestionListAll();
+    int selectQuestionListAllCount();
+    List<QuestionListResponseDTO> selectQuestionList(String questionKindSeq);
+    int selectQuestionListCount(String questionKindSeq);
+    QuestionListResponseDTO selectQuestionDetail(String questionSeq);
 }

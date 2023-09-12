@@ -26,27 +26,115 @@
     </insert>
     
     <select id="selectQuestionListAll" resultType="QuestionListResponseDTO">
-        SELECT @ROWNUM:=@ROWNUM+1 as rownum
-             , a.question_seq
-             , a.user_seq
-             , b.file_seq
-             , a.question_kind_seq
-             , a.question_title
-             , a.question_content
-             , a.question_created_at
-          FROM question a
-             , file b
-        , question_image c
-        , (SELECT @ROWNUM:=0) R
-        WHERE a.user_seq = b.user_seq
-        AND a.question_seq = c.question_seq
-        AND b.file_seq = c.file_seq
+           SELECT @ROWNUM := @ROWNUM + 1 AS rownum
+                , q.question_seq
+                , q.user_seq
+                , q.question_kind_seq
+                , qk.question_kind_name
+                , qq.file_cnt
+                , q.question_title
+                , q.question_content
+                , q.question_created_at
+                , qa.question_answer_seq
+             FROM question q
+        LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq
+        LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq
+        LEFT JOIN ( SELECT q.question_seq
+                         , COUNT(qi.file_seq) AS file_cnt
+                      FROM question q
+                 LEFT JOIN question_image qi ON q.question_seq =qi.question_seq
+                  GROUP BY q.question_seq
+                  ) qq ON q.question_seq = qq.question_seq
+             JOIN (SELECT @ROWNUM := 0) rownum
+         ORDER BY q.question_seq
     </select>
     
     <select id="selectQuestionListAllCount" resultType="int">
-        SELECT count(*)
-          FROM question
+           SELECT count(*)
+             FROM question q
+        LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq
+        LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq
+        LEFT JOIN ( SELECT q.question_seq
+                         , COUNT(qi.file_seq) AS file_cnt
+                      FROM question q
+                 LEFT JOIN question_image qi ON q.question_seq =qi.question_seq
+                  GROUP BY q.question_seq
+                  ) qq ON q.question_seq = qq.question_seq
+             JOIN (SELECT @ROWNUM := 0) rownum
+         ORDER BY q.question_seq
     </select>
+    
+    <select id="selectQuestionList" resultType="QuestionListResponseDTO">
+           SELECT @ROWNUM := @ROWNUM + 1 AS rownum
+                , q.question_seq
+                , q.user_seq
+                , q.question_kind_seq
+                , qk.question_kind_name
+                , qq.file_cnt
+                , q.question_title
+                , q.question_content
+                , q.question_created_at
+                , qa.question_answer_seq
+             FROM question q
+        LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq
+        LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq
+        LEFT JOIN ( SELECT q.question_seq
+                         , COUNT(qi.file_seq) AS file_cnt
+                      FROM question q
+                 LEFT JOIN question_image qi ON q.question_seq =qi.question_seq
+                  GROUP BY q.question_seq
+                  ) qq ON q.question_seq = qq.question_seq
+             JOIN (SELECT @ROWNUM := 0) rownum
+            WHERE q.question_kind_seq = #{questionKindSeq}
+         ORDER BY q.question_seq
+    </select>
+    
+    <select id="selectQuestionListCount" resultType="int">
+        SELECT COUNT(*)
+          FROM question q
+     LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq
+     LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq
+     LEFT JOIN ( SELECT q.question_seq
+                      , COUNT(qi.file_seq) AS file_cnt
+                   FROM question q
+              LEFT JOIN question_image qi ON q.question_seq =qi.question_seq
+               GROUP BY q.question_seq
+               ) qq ON q.question_seq = qq.question_seq
+          JOIN (SELECT @ROWNUM := 0) rownum
+         WHERE q.question_kind_seq = #{questionKindSeq}
+      ORDER BY q.question_seq
+    </select>
+    
+    <select id="selectQuestionDetail" resultMap="questionDetailsResultMap">
+        SELECT q.question_seq
+             , q.user_seq
+             , q.question_kind_seq
+             , qk.question_kind_name
+             , q.question_title
+             , q.question_content
+             , q.question_created_at
+             , qa.question_answer_seq
+             , f.file_path
+          FROM question q
+     LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq
+     LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq
+     LEFT JOIN question_image qi ON q.question_seq =qi.question_seq
+     LEFT JOIN file f on qi.file_seq= f.file_seq
+         WHERE q.question_seq = #{questionSeq}
+    </select>
+    
+    <resultMap id="questionDetailsResultMap" type="QuestionListResponseDTO">
+        <id property="questionSeq" column="question_seq"/>
+        <result property="userSeq" column="user_seq"/>
+        <result property="questionKindSeq" column="question_kind_seq" />
+        <result property="questionKindName" column="question_kind_name" />
+        <result property="questionTitle" column="question_title" />
+        <result property="questionContent" column="question_content" />
+        <result property="questionCreatedAt" column="question_created_at" />
+        <collection property="filePaths" ofType="string" javaType="java.util.List">
+            <result property="filePath" column="file_path" />
+        </collection>
+    </resultMap>
 </mapper>
 
 
