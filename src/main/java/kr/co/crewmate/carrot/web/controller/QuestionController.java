@@ -2,7 +2,9 @@ package kr.co.crewmate.carrot.web.controller;
 
 import kr.co.crewmate.carrot.model.dto.QuestionListResponseDTO;
 import kr.co.crewmate.carrot.model.entity.File;
+import kr.co.crewmate.carrot.model.entity.QuestionAnswer;
 import kr.co.crewmate.carrot.model.entity.QuestionKind;
+import kr.co.crewmate.carrot.model.form.QuestionAnswerCreateForm;
 import kr.co.crewmate.carrot.service.CategoryKindService;
 import kr.co.crewmate.carrot.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -64,5 +66,13 @@ public class QuestionController {
         return "question/questionAnswerPage";
     }
 
+    @GetMapping("/admin/answered-question/{seq}")
+    public String questionAnsweredPage(@PathVariable("seq") String questionSeq, Model model) {
+        QuestionListResponseDTO question = questionService.retrieveQuestionDetail(questionSeq);
+        QuestionAnswer questionAnswer = questionService.retrieveQuestionAnswer(questionSeq);
 
+        model.addAttribute("question", question);
+        model.addAttribute("questionAnswer", questionAnswer);
+        return "question/questionAnsweredPage";
+    }
 }

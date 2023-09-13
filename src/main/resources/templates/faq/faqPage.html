@@ -61,8 +61,8 @@
             </tr>
             </thead>
             <tbody id="faqListTableBody">
-            <tr th:each="faqList, rowStatus : ${faqList}" th:faq-seq-id="${faqList.faqSeq}">
-                <th th:text="${faqList.rownum}"></th>
+            <tr th:each="faqList : ${faqList}" th:faq-seq-id="${faqList.faqSeq}">
+                <td th:text="${faqList.rownum}"></td>
                 <td th:text="${faqList.faqKindName}"></td>
                 <td>
                     <p>

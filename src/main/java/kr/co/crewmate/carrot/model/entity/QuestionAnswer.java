@@ -13,7 +13,7 @@ public class QuestionAnswer {
 
     private String questionAnswerSeq;
     private String questionSeq;
-    private String  questionAnswerContent;
+    private String questionAnswerContent;
     private String questionAnswerCreatedAt;
 
 }

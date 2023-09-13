@@ -81,7 +81,7 @@
                 <td th:text="${questionList.questionCreatedAt}"></td>
                 <td>
                     <a th:text="${questionList.hasAnswer}"
-                       th:href="${questionList.hasAnswer == '미답변' ? '/admin/answer-question/' + questionList.questionSeq : '/admin/question/' + questionList.questionKindSeq}"></a>
+                       th:href="${questionList.hasAnswer == '미답변' ? '/admin/answer-question/' + questionList.questionSeq : '/admin/answered-question/' + questionList.questionSeq}"></a>
                 </td>
             </tr>
             </tbody>

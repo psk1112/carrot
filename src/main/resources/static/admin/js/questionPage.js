@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
             Swal.fire('이미지는 최대 10개까지 업로드 할 수 있습니다.');
 
             // 선택한 파일 원복
-            questionFile.value = null;
+            questionFiles.value = null;
         }
     });
 

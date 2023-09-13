@@ -26,7 +26,7 @@
     </insert>
     
     <select id="selectQuestionListAll" resultType="QuestionListResponseDTO">
-           SELECT @ROWNUM := @ROWNUM + 1 AS rownum
+           SELECT ROW_NUMBER() OVER(ORDER BY question_seq ASC) AS rownum
                 , q.question_seq
                 , q.user_seq
                 , q.question_kind_seq
@@ -45,8 +45,6 @@
                  LEFT JOIN question_image qi ON q.question_seq =qi.question_seq
                   GROUP BY q.question_seq
                   ) qq ON q.question_seq = qq.question_seq
-             JOIN (SELECT @ROWNUM := 0) rownum
-         ORDER BY q.question_seq
     </select>
     
     <select id="selectQuestionListAllCount" resultType="int">
@@ -60,12 +58,10 @@
                  LEFT JOIN question_image qi ON q.question_seq =qi.question_seq
                   GROUP BY q.question_seq
                   ) qq ON q.question_seq = qq.question_seq
-             JOIN (SELECT @ROWNUM := 0) rownum
-         ORDER BY q.question_seq
     </select>
     
     <select id="selectQuestionList" resultType="QuestionListResponseDTO">
-           SELECT @ROWNUM := @ROWNUM + 1 AS rownum
+           SELECT ROW_NUMBER() OVER(ORDER BY question_seq ASC) AS rownum
                 , q.question_seq
                 , q.user_seq
                 , q.question_kind_seq
@@ -84,9 +80,7 @@
                  LEFT JOIN question_image qi ON q.question_seq =qi.question_seq
                   GROUP BY q.question_seq
                   ) qq ON q.question_seq = qq.question_seq
-             JOIN (SELECT @ROWNUM := 0) rownum
             WHERE q.question_kind_seq = #{questionKindSeq}
-         ORDER BY q.question_seq
     </select>
     
     <select id="selectQuestionListCount" resultType="int">
@@ -100,9 +94,7 @@
               LEFT JOIN question_image qi ON q.question_seq =qi.question_seq
                GROUP BY q.question_seq
                ) qq ON q.question_seq = qq.question_seq
-          JOIN (SELECT @ROWNUM := 0) rownum
          WHERE q.question_kind_seq = #{questionKindSeq}
-      ORDER BY q.question_seq
     </select>
     
     <select id="selectQuestionDetail" resultMap="questionDetailsResultMap">
@@ -135,6 +127,25 @@
             <result property="filePath" column="file_path" />
         </collection>
     </resultMap>
+    
+    <insert id="insertQuestionAnswer" parameterType="QuestionAnswerCreateForm">
+        INSERT
+          INTO question_answer ( question_seq
+                        , question_answer_content
+                        , question_answer_created_at)
+        VALUES ( #{questionSeq}
+               , #{questionAnswerContent}
+               , #{questionAnswerCreatedAt} )
+    </insert>
+    
+    <select id="selectQuestionAnswer" resultType="QuestionAnswer">
+        SELECT question_answer_seq
+             , question_seq
+             , question_answer_content
+             , question_answer_created_at
+          FROM question_answer
+         WHERE question_seq = #{questionSeq}
+    </select>
 </mapper>
 
 

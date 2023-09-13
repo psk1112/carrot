@@ -20,7 +20,7 @@
     </insert>
 
     <select id="selectFaqListAll" resultType="FaqListResponseDTO">
-        SELECT @ROWNUM:=@ROWNUM+1 as rownum
+        SELECT ROW_NUMBER() OVER(ORDER BY faq_seq ASC) AS rownum
         , a.faq_seq
         , a.faq_kind_seq
         , b.faq_kind_name
@@ -30,7 +30,6 @@
         , a.faq_created_at
         FROM faq a
         , faq_kind b
-        , (SELECT @ROWNUM:=0) R
         WHERE 1=1
         AND a.faq_kind_seq = b.faq_kind_seq
     </select>
@@ -44,7 +43,7 @@
     </select>
 
     <select id="selectFaqList" resultType="FaqListResponseDTO">
-        SELECT @ROWNUM:=@ROWNUM+1 as rownum
+        SELECT ROW_NUMBER() OVER(ORDER BY faq_seq ASC) AS rownum
              , a.faq_seq
              , a.faq_kind_seq
              , b.faq_kind_name
@@ -54,7 +53,6 @@
              , a.faq_created_at
           FROM faq a
              , faq_kind b
-             , (SELECT @ROWNUM:=0) R
          WHERE 1=1
            AND a.faq_kind_seq = b.faq_kind_seq
            AND a.faq_kind_seq = #{faqKindSeq}

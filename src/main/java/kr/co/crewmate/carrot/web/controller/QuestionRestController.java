@@ -2,6 +2,7 @@ package kr.co.crewmate.carrot.web.controller;
 
 import jakarta.validation.Valid;
 import kr.co.crewmate.carrot.model.CommonResponse;
+import kr.co.crewmate.carrot.model.form.QuestionAnswerCreateForm;
 import kr.co.crewmate.carrot.model.form.QuestionCreateForm;
 import kr.co.crewmate.carrot.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +14,11 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
 public class QuestionRestController {
 
     private final QuestionService questionService;
 
-    @PostMapping("/question")
+    @PostMapping("/user/question")
     public CommonResponse createQuestion(@Valid QuestionCreateForm questionCreateForm , BindingResult bindingResult) {
         CommonResponse response = new CommonResponse();
         Map<String, String> error = new HashMap<>();
@@ -40,6 +40,30 @@ public class QuestionRestController {
           }catch (Exception e){
               response.setStatusCode(500);
           }
+        }
+        return response;
+    }
+
+
+    @PostMapping("/admin/question")
+    public CommonResponse createQuestionAnswer(@Valid @RequestBody QuestionAnswerCreateForm questionAnswerCreateForm , BindingResult bindingResult) {
+        CommonResponse response = new CommonResponse();
+        Map<String, String> error = new HashMap<>();
+
+        if (bindingResult.hasErrors()) {
+            if (bindingResult.getFieldError("questionAnswerContent") != null) {
+                error.put("questionAnswerContent", bindingResult.getFieldError("questionAnswerContent").getDefaultMessage());
+            }
+            response.setStatusCode(401);
+            response.setBody(error);
+
+        } else {
+            try {
+                questionService.createQuestionAnswer(questionAnswerCreateForm);
+                response.setStatusCode(200);
+            }catch (Exception e){
+                response.setStatusCode(500);
+            }
         }
         return response;
     }

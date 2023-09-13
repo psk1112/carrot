@@ -130,7 +130,8 @@
             <h2 class="card-title">문의 답변 등록</h2><br>
             <div class="mb-3">
                 <label for="questionAnswerContent" class="col-form-label">내용:</label>
-                <textarea id="questionAnswerContent" name="questionAnswerContent" rows="13" class="form-control"></textarea>
+                <textarea id="questionAnswerContent" name="questionAnswerContent" rows="13" class="form-control"
+                th:text="${questionAnswer.questionAnswerContent}"></textarea>
                 <div class="errordiv"></div>
             </div>
             <div class="mb-3 btnDiv">

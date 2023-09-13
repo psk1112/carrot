@@ -2,13 +2,16 @@ package kr.co.crewmate.carrot.service;
 
 import kr.co.crewmate.carrot.model.dto.QuestionListResponseDTO;
 import kr.co.crewmate.carrot.model.entity.File;
+import kr.co.crewmate.carrot.model.entity.QuestionAnswer;
 import kr.co.crewmate.carrot.model.entity.QuestionImage;
+import kr.co.crewmate.carrot.model.form.QuestionAnswerCreateForm;
 import kr.co.crewmate.carrot.model.form.QuestionCreateForm;
 import kr.co.crewmate.carrot.repository.FileMapper;
 import kr.co.crewmate.carrot.repository.QuestionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -72,11 +75,6 @@ public class QuestionService {
 
                         questionMapper.insertQuestionImage(questionImage);
                 }
-
-
-
-
-
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -125,13 +123,29 @@ public class QuestionService {
 
     public QuestionListResponseDTO retrieveQuestionDetail(String questionSeq){
         QuestionListResponseDTO questionDetails = questionMapper.selectQuestionDetail(questionSeq);
-        List<String> imageList = questionDetails.getFilePaths();
-        List<String> filePaths = new ArrayList<>();
-        for (String filePath : imageList) {
-            String path = filePath.substring(filePath.indexOf("\\question"));
-            filePaths.add(path);
-        }
-        questionDetails.setFilePaths(filePaths);
+
+            List<String> imageList = questionDetails.getFilePaths();
+            List<String> filePaths = new ArrayList<>();
+            for (String filePath : imageList) {
+                String path = filePath.substring(filePath.indexOf("\\question"));
+                filePaths.add(path);
+            }
+            questionDetails.setFilePaths(filePaths);
+
         return questionDetails;
+    }
+
+    public void createQuestionAnswer(QuestionAnswerCreateForm questionAnswerCreateForm){
+
+        Date nowDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String questionAnswerCreatedAt = dateFormat.format(nowDate);
+        questionAnswerCreateForm.setQuestionAnswerCreatedAt(questionAnswerCreatedAt);
+
+        questionMapper.insertQuestionAnswer(questionAnswerCreateForm);
+    }
+
+    public QuestionAnswer retrieveQuestionAnswer(String questionSeq){
+        return questionMapper.selectQuestionAnswer(questionSeq);
     }
 }

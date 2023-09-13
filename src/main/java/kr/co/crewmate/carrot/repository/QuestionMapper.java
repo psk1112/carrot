@@ -3,7 +3,9 @@ package kr.co.crewmate.carrot.repository;
 import kr.co.crewmate.carrot.model.dto.QuestionListResponseDTO;
 import kr.co.crewmate.carrot.model.entity.File;
 import kr.co.crewmate.carrot.model.entity.Question;
+import kr.co.crewmate.carrot.model.entity.QuestionAnswer;
 import kr.co.crewmate.carrot.model.entity.QuestionImage;
+import kr.co.crewmate.carrot.model.form.QuestionAnswerCreateForm;
 import kr.co.crewmate.carrot.model.form.QuestionCreateForm;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Mapper;
@@ -20,4 +22,8 @@ public interface QuestionMapper {
     List<QuestionListResponseDTO> selectQuestionList(String questionKindSeq);
     int selectQuestionListCount(String questionKindSeq);
     QuestionListResponseDTO selectQuestionDetail(String questionSeq);
+
+    void insertQuestionAnswer(QuestionAnswerCreateForm questionAnswerCreateForm);
+
+    QuestionAnswer selectQuestionAnswer(String questionSeq);
 }
