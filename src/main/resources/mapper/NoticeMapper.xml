@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.crewmate.carrot.repository.NoticeMapper">
+
+    <!-- 문의하기 카테고리 CRUD -->
+<!--    <insert id="insertQuestion" parameterType="QuestionListResponseDTO" useGeneratedKeys="true" keyProperty="questionSeq">-->
+<!--        INSERT-->
+<!--          INTO question ( user_seq-->
+<!--                        , question_kind_seq-->
+<!--                        , question_title-->
+<!--                        , question_content-->
+<!--                        , question_created_at)-->
+<!--        VALUES ( #{userSeq}-->
+<!--               , #{questionKindSeq}-->
+<!--               , #{questionTitle}-->
+<!--               , #{questionContent}-->
+<!--               , #{questionCreatedAt} )-->
+<!--    </insert>-->
+
+<!--    <insert id="insertQuestionImage" parameterType="QuestionImage">-->
+<!--        INSERT-->
+<!--          INTO question_image ( file_seq-->
+<!--                              , question_seq )-->
+<!--        VALUES ( #{fileSeq}-->
+<!--               , #{questionSeq} )-->
+<!--    </insert>-->
+    
+    <select id="selectNoticeListAll" resultType="NoticeListResponseDTO">
+        SELECT ROW_NUMBER() OVER(ORDER BY post_seq ASC) AS rownum
+             , post_seq
+             , user_seq
+             , post_kind
+             , post_title
+             , post_content
+             , post_view_count
+             , post_created_at
+             , post_important
+          FROM post
+         WHERE 1=1
+        <if test="postKind != null">
+           AND post_kind = #{postKind}
+        </if>
+    </select>
+    
+    <select id="selectNoticeListAllCount" resultType="int">
+        SELECT count(*)
+          FROM post
+         WHERE 1=1
+        <if test="postKind != null">
+           AND post_kind = #{postKind}
+        </if>
+    </select>
+   
+<!--    <select id="selectQuestionDetail" resultMap="questionDetailsResultMap">-->
+<!--        SELECT q.question_seq-->
+<!--             , q.user_seq-->
+<!--             , q.question_kind_seq-->
+<!--             , qk.question_kind_name-->
+<!--             , q.question_title-->
+<!--             , q.question_content-->
+<!--             , q.question_created_at-->
+<!--             , qa.question_answer_seq-->
+<!--             , f.file_path-->
+<!--          FROM question q-->
+<!--     LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq-->
+<!--     LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq-->
+<!--     LEFT JOIN question_image qi ON q.question_seq =qi.question_seq-->
+<!--     LEFT JOIN file f on qi.file_seq= f.file_seq-->
+<!--         WHERE q.question_seq = #{questionSeq}-->
+<!--    </select>-->
+<!--    -->
+<!--    <resultMap id="questionDetailsResultMap" type="QuestionListResponseDTO">-->
+<!--        <id property="questionSeq" column="question_seq"/>-->
+<!--        <result property="userSeq" column="user_seq"/>-->
+<!--        <result property="questionKindSeq" column="question_kind_seq" />-->
+<!--        <result property="questionKindName" column="question_kind_name" />-->
+<!--        <result property="questionTitle" column="question_title" />-->
+<!--        <result property="questionContent" column="question_content" />-->
+<!--        <result property="questionCreatedAt" column="question_created_at" />-->
+<!--        <collection property="filePaths" ofType="string" javaType="java.util.List">-->
+<!--            <result property="filePath" column="file_path" />-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+<!--    -->
+<!--    <select id="selectMyQuestionListAll" resultType="QuestionListResponseDTO">-->
+<!--           SELECT ROW_NUMBER() OVER(ORDER BY question_seq ASC) AS rownum-->
+<!--                , q.question_seq-->
+<!--                , q.user_seq-->
+<!--                , q.question_kind_seq-->
+<!--                , qk.question_kind_name-->
+<!--                , qq.file_cnt-->
+<!--                , q.question_title-->
+<!--                , q.question_content-->
+<!--                , q.question_created_at-->
+<!--                , qa.question_answer_seq-->
+<!--             FROM question q-->
+<!--        LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq-->
+<!--        LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq-->
+<!--        LEFT JOIN ( SELECT q.question_seq-->
+<!--                         , COUNT(qi.file_seq) AS file_cnt-->
+<!--                      FROM question q-->
+<!--                 LEFT JOIN question_image qi ON q.question_seq =qi.question_seq-->
+<!--                  GROUP BY q.question_seq-->
+<!--                  ) qq ON q.question_seq = qq.question_seq-->
+<!--            WHERE q.user_seq = #{userSeq}-->
+<!--    </select>-->
+<!--    -->
+<!--    <select id="selectMyQuestionListAllCount" resultType="int">-->
+<!--           SELECT COUNT(*)-->
+<!--             FROM question q-->
+<!--        LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq-->
+<!--        LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq-->
+<!--        LEFT JOIN ( SELECT q.question_seq-->
+<!--                         , COUNT(qi.file_seq) AS file_cnt-->
+<!--                      FROM question q-->
+<!--                 LEFT JOIN question_image qi ON q.question_seq =qi.question_seq-->
+<!--                  GROUP BY q.question_seq-->
+<!--                  ) qq ON q.question_seq = qq.question_seq-->
+<!--            WHERE q.user_seq = #{userSeq}-->
+<!--    </select>-->
+<!--    -->
+<!--    <select id="selectMyQuestionList" resultType="QuestionListResponseDTO">-->
+<!--           SELECT ROW_NUMBER() OVER(ORDER BY question_seq ASC) AS rownum-->
+<!--                , q.question_seq-->
+<!--                , q.user_seq-->
+<!--                , q.question_kind_seq-->
+<!--                , qk.question_kind_name-->
+<!--                , qq.file_cnt-->
+<!--                , q.question_title-->
+<!--                , q.question_content-->
+<!--                , q.question_created_at-->
+<!--                , qa.question_answer_seq-->
+<!--             FROM question q-->
+<!--        LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq-->
+<!--        LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq-->
+<!--        LEFT JOIN ( SELECT q.question_seq-->
+<!--                         , COUNT(qi.file_seq) AS file_cnt-->
+<!--                      FROM question q-->
+<!--                 LEFT JOIN question_image qi ON q.question_seq =qi.question_seq-->
+<!--                  GROUP BY q.question_seq-->
+<!--                  ) qq ON q.question_seq = qq.question_seq-->
+<!--            WHERE q.user_seq = #{userSeq}-->
+<!--              AND q.question_kind_seq = #{questionKindSeq}-->
+<!--    </select>-->
+<!--    -->
+<!--    <select id="selectMyQuestionListCount" resultType="int">-->
+<!--           SELECT COUNT(*)-->
+<!--             FROM question q-->
+<!--        LEFT JOIN question_answer qa ON q.question_seq = qa.question_seq-->
+<!--        LEFT JOIN question_kind qk ON q.question_kind_seq = qk.question_kind_seq-->
+<!--        LEFT JOIN ( SELECT q.question_seq-->
+<!--                         , COUNT(qi.file_seq) AS file_cnt-->
+<!--                      FROM question q-->
+<!--                 LEFT JOIN question_image qi ON q.question_seq =qi.question_seq-->
+<!--                  GROUP BY q.question_seq-->
+<!--                  ) qq ON q.question_seq = qq.question_seq-->
+<!--            WHERE q.user_seq = #{userSeq}-->
+<!--              AND q.question_kind_seq = #{questionKindSeq}-->
+<!--    </select>-->
+<!--    -->
+<!--    <delete id="deleteQuestion" parameterType="questionDeleteForm">-->
+<!--        DELETE-->
+<!--          FROM question-->
+<!--         WHERE 1=1-->
+<!--           AND question_seq = #{questionSeq}-->
+<!--    </delete>-->
+<!--    -->
+<!--    <insert id="insertQuestionAnswer" parameterType="QuestionAnswerCreateForm">-->
+<!--        INSERT-->
+<!--          INTO question_answer ( question_seq-->
+<!--                               , question_answer_content-->
+<!--                               , question_answer_created_at)-->
+<!--        VALUES ( #{questionSeq}-->
+<!--               , #{questionAnswerContent}-->
+<!--               , #{questionAnswerCreatedAt} )-->
+<!--    </insert>-->
+<!--    -->
+<!--    <select id="selectQuestionAnswer" resultType="QuestionAnswer">-->
+<!--        SELECT question_answer_seq-->
+<!--             , question_seq-->
+<!--             , question_answer_content-->
+<!--             , question_answer_created_at-->
+<!--          FROM question_answer-->
+<!--         WHERE question_seq = #{questionSeq}-->
+<!--    </select>-->
+<!--    -->
+<!--    <update id="updateQuestionAnswer" parameterType="QuestionAnswer">-->
+<!--        UPDATE question_answer-->
+<!--           SET question_answer_content = #{questionAnswerContent}-->
+<!--             , question_answer_created_at = #{questionAnswerCreatedAt}-->
+<!--        WHERE 1=1-->
+<!--        AND question_answer_seq = #{questionAnswerSeq}-->
+<!--    </update>-->
+<!--    -->
+<!--    <delete id="deleteQuestionAnswer" parameterType="questionAnswerDeleteForm">-->
+<!--        DELETE-->
+<!--          FROM question_answer-->
+<!--         WHERE 1=1-->
+<!--           AND question_answer_seq = #{questionAnswerSeq}-->
+<!--    </delete>-->
+<!--    -->
+<!--    <update id="updateQuestion" parameterType="QuestionListResponseDTO" useGeneratedKeys="true" keyProperty="questionSeq">-->
+<!--        UPDATE question-->
+<!--           SET question_kind_seq = #{questionKindSeq}-->
+<!--             , question_title = #{questionTitle}-->
+<!--             , question_content = #{questionContent}-->
+<!--             , question_created_at = #{questionCreatedAt}-->
+<!--         WHERE 1=1-->
+<!--&lt;!&ndash;           AND user_seq = #{userSeq}&ndash;&gt;-->
+<!--           AND question_seq = #{questionSeq}-->
+<!--    </update>-->
+<!--    -->
+<!--    <update id="updateQuestionImage" parameterType="QuestionImage">-->
+<!--        UPDATE question_image-->
+<!--           SET file_seq = #{fileSeq}-->
+<!--         WHERE 1=1-->
+<!--           AND question_seq = #{questionSeq}-->
+<!--    </update>-->
+</mapper>
+
+

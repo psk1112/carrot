@@ -59,9 +59,7 @@ public class FaqController {
     public String faqWritePage(Model model){
 
         List<FaqKind> faqKind = categoryKindService.retrieveFaqKindList();
-        FaqListResponseDTO faqDTO = new FaqListResponseDTO();
 
-        model.addAttribute("faqDTO", faqDTO);
         model.addAttribute("faqKind", faqKind);
         return "faq/faqWritePage";
     }
