@@ -1,10 +1,8 @@
 package kr.co.crewmate.carrot.web.controller;
 
 import kr.co.crewmate.carrot.model.dto.QuestionListResponseDTO;
-import kr.co.crewmate.carrot.model.entity.File;
 import kr.co.crewmate.carrot.model.entity.QuestionAnswer;
 import kr.co.crewmate.carrot.model.entity.QuestionKind;
-import kr.co.crewmate.carrot.model.form.QuestionAnswerCreateForm;
 import kr.co.crewmate.carrot.service.CategoryKindService;
 import kr.co.crewmate.carrot.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -30,14 +27,42 @@ public class QuestionController {
         return "question/questionPage";
     }
 
-    @GetMapping("/user/myQuestion")
+    @GetMapping("/user/my-question")
     public String myQuestionPage (Model model){
+        int userSeq = 0; //임의로 값 넣은거야
+        List<QuestionKind> questionKind = categoryKindService.retrieveQuestionKindList();
+        List<QuestionListResponseDTO> questions = questionService.retrieveMyQuestionListAll(userSeq);
+        int questionCnt = questionService.retrieveMyQuestionListAllCount(userSeq);
+        model.addAttribute("questionKind", questionKind);
+        model.addAttribute("questions", questions);
+        model.addAttribute("questionCnt", questionCnt);
         return "question/myQuestionPage";
     }
 
+    @GetMapping("/user/my-question/{seq}")
+    public String questionPage (@PathVariable("seq") String questionKindSeq, Model model){
+        int userSeq = 0; //임의로 값 넣은거야
+        List<QuestionKind> questionKind = categoryKindService.retrieveQuestionKindList();
+        List<QuestionListResponseDTO> questions = questionService.retrieveMyQuestionList(userSeq, questionKindSeq);
+        int questionCnt = questionService.retrieveMyQuestionListCount(userSeq, questionKindSeq);
+        model.addAttribute("questionKind", questionKind);
+        model.addAttribute("questions", questions);
+        model.addAttribute("questionCnt", questionCnt);
+        return "question/myQuestionPage";
+    }
+
+    @GetMapping("/user/modify-question/{seq}")
+    public String questionModifyPage (@PathVariable("seq") String questionSeq, Model model){
+        int userSeq = 0; //임의로 값 넣은거야
+        List<QuestionKind> questionKind = categoryKindService.retrieveQuestionKindList();
+        QuestionListResponseDTO question = questionService.retrieveQuestionDetail(questionSeq);
+        model.addAttribute("questionKind", questionKind);
+        model.addAttribute("question", question);
+        return "question/questionModifyPage";
+    }
 
     @GetMapping("/admin/question")
-    public String retrieveAdminQuestion (Model model){
+    public String adminQuestionPage (Model model){
         List<QuestionKind> questionKind = categoryKindService.retrieveQuestionKindList();
         List<QuestionListResponseDTO> questions = questionService.retrieveQuestionListAll();
         int questionCnt = questionService.retrieveQuestionListAllCount();
@@ -48,7 +73,7 @@ public class QuestionController {
     }
 
     @GetMapping("/admin/question/{seq}")
-    public String retrieveAdminQuestion (@PathVariable("seq") String questionKindSeq, Model model){
+    public String adminQuestionPage (@PathVariable("seq") String questionKindSeq, Model model){
         List<QuestionKind> questionKind = categoryKindService.retrieveQuestionKindList();
         List<QuestionListResponseDTO> questions = questionService.retrieveQuestionList(questionKindSeq);
         int questionCnt = questionService.retrieveQuestionListCount(questionKindSeq);
@@ -63,11 +88,21 @@ public class QuestionController {
         QuestionListResponseDTO question = questionService.retrieveQuestionDetail(questionSeq);
 
         model.addAttribute("question", question);
-        return "question/questionAnswerPage";
+        return "question/adminQuestionAnswerPage";
     }
 
     @GetMapping("/admin/answered-question/{seq}")
     public String questionAnsweredPage(@PathVariable("seq") String questionSeq, Model model) {
+        QuestionListResponseDTO question = questionService.retrieveQuestionDetail(questionSeq);
+        QuestionAnswer questionAnswer = questionService.retrieveQuestionAnswer(questionSeq);
+
+        model.addAttribute("question", question);
+        model.addAttribute("questionAnswer", questionAnswer);
+        return "question/adminQuestionAnsweredPage";
+    }
+
+    @GetMapping("/user/answered-question/{seq}")
+    public String userQuestionAnsweredPage(@PathVariable("seq") String questionSeq, Model model) {
         QuestionListResponseDTO question = questionService.retrieveQuestionDetail(questionSeq);
         QuestionAnswer questionAnswer = questionService.retrieveQuestionAnswer(questionSeq);
 

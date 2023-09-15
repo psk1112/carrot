@@ -13,12 +13,12 @@ import java.util.List;
 public interface FaqMapper {
 
     //자주묻는 질문 CRUD
-    int insertFaq (FaqListResponseDTO faqListResponseDTO);
+    void insertFaq (FaqListResponseDTO faqListResponseDTO);
     List<FaqListResponseDTO> selectFaqListAll ();
     int selectFaqListAllCount ();
     List<FaqListResponseDTO> selectFaqList (String faqKindSeq);
     int selectFaqListCount (String faqKindSeq);
     Faq selectDetailFaq (String faqSeq);
-    int deleteFaq (FaqDeleteForm faqDeleteForm);
-    int modifyFaq (FaqModifyForm faqModifyForm);
+    void deleteFaq (FaqDeleteForm faqDeleteForm);
+    void updateFaq (FaqModifyForm faqModifyForm);
 }

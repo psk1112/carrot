@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var saveButtons = document.getElementById("save-button");
+    var saveButton = document.getElementById("save-button");
     var questionFiles = document.getElementById('questionFiles');
     var files;
 
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // 저장 버튼 클릭 시
-    saveButtons.addEventListener("click", function() {
+    saveButton.addEventListener("click", function() {
 
         // 이전 에러 메시지 삭제
         document.querySelectorAll(".errordiv").forEach(function(errordiv) {
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     icon: 'success',
                     confirmButtonText: '확인'
                 }).then(() => {
-                window.location.href = "/user/myQuestion";
+                window.location.href = "/user/my-question";
                 })
             } else if (data.statusCode === 401) {
                 // 각 에러 메시지를 동적으로 표시

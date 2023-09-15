@@ -30,10 +30,10 @@ public class CategoryKindRestController {
             response.setBody(bindingResult.getFieldError("categoryNames").getDefaultMessage());
             return response;
         } else {
-            boolean save = categoryKindService.createCategory(categoryCreateForm);
-            if (save) {
+            try {
+                categoryKindService.createCategory(categoryCreateForm);
                 response.setStatusCode(200);
-            } else {
+            } catch (Exception e){
                 response.setStatusCode(400);
             }
 
@@ -55,10 +55,10 @@ public class CategoryKindRestController {
             response.setBody(bindingResult.getFieldError("categoryNames").getDefaultMessage());
             return response;
         } else {
-            boolean save = categoryKindService.modifyCategory(categoryModifyForm);
-            if (save) {
+            try {
+                categoryKindService.modifyCategory(categoryModifyForm);
                 response.setStatusCode(200);
-            } else {
+            } catch (Exception e){
                 response.setStatusCode(400);
             }
         }
@@ -75,10 +75,11 @@ public class CategoryKindRestController {
     @DeleteMapping("/category")
     public CommonResponse deleteCategory(@RequestBody @Valid CategoryDeleteForm categoryDeleteForm) {
         CommonResponse response = new CommonResponse();
-        boolean deleted = categoryKindService.deleteCategory(categoryDeleteForm);
-        if (deleted) {
+
+        try {
+            categoryKindService.deleteCategory(categoryDeleteForm);
             response.setStatusCode(200);
-        } else {
+        } catch (Exception e){
             response.setStatusCode(400);
         }
         return response;

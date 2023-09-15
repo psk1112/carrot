@@ -19,7 +19,7 @@
 
         .card {
             width: 60rem;
-            min-height: 65vh;
+            min-height: 70vh;
             max-height: 80vh;
             overflow: auto;
         }
@@ -59,11 +59,10 @@
             max-height: 80vh;
             object-fit: contain
         }
-
     </style>
 </th:block>
 <th:block layout:fragment="script">
-    <script src="/admin/js/questionAnswerPage.js"></script>
+    <script src="/admin/js/questionAnsweredPage.js"></script>
 </th:block>
 <div layout:fragment="content" class="container my-3 card-container">
     <div class="card" id="card1">
@@ -127,16 +126,16 @@
     </div>
     <div class="card" id="card2">
         <div class="card-body">
-            <h2 class="card-title">문의 답변 등록</h2><br>
+            <input type="hidden" id="questionAnswerSeq" th:value="${questionAnswer.questionAnswerSeq}">
+            <h2 class="card-title">답변 내용</h2><br>
             <div class="mb-3">
                 <label for="questionAnswerContent" class="col-form-label">내용:</label>
                 <textarea id="questionAnswerContent" name="questionAnswerContent" rows="13" class="form-control"
-                th:text="${questionAnswer.questionAnswerContent}"></textarea>
+                th:text="${questionAnswer.questionAnswerContent}" disabled></textarea>
                 <div class="errordiv"></div>
             </div>
             <div class="mb-3 btnDiv">
-                <button type="button" class="btn btn-secondary" id="cancel-button" th:onclick="|location.href='@{/admin/question}'|">취소</button>
-                <button type="button" class="btn btn-warning" id="save-button">저장</button>
+                <button type="button" class="btn btn-secondary" id="prev-button" th:onclick="|location.href='@{/user/my-question}'|">이전</button>
             </div>
         </div>
     </div>

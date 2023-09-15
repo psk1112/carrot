@@ -10,31 +10,54 @@
     <link href="/admin/css/sidebars.css" rel="stylesheet">
     <th:block layout:fragment="css"></th:block>
     <style>
-        #contain {
-            width: 100%;
-            max-height: 85vh;
+        .sidebar {
+          width: 250px;
+          position: fixed;
+          top: 73px;
+          left: 0;
+          bottom: 0;
+          background-color: #f0f0f0;
+          overflow-y: auto;
+          transition: width 0.3s;
+          float:left;
         }
-        #layoutSidenav {
-            float: left;
-            width: 15%;
-            min-height: 85vh;
+        .content {
+          overflow-y: scroll;
+          float:right;
+          width: calc(100% - 250px);
+        }
+        .footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          padding: 10px 0;
         }
 
-        #layoutSidenav_content {
-            display: inline-block;
-            width: 85%;
-            min-height: 85vh;
+        @media only screen and (max-width: 768px) {
+          /* 브라우저 폭이 768px 이하일 때 적용되는 스타일 */
+          .sidebar {
+            width: 0;
+          }
+
+          .content {
+            margin-left: 0;
+            width: 100%;
+          }
         }
     </style>
 </head>
 <body class="sb-nav-fixed">
     <th:block th:replace="~{adminFragments/header :: headerFragment}"></th:block>
     <div id="contain">
-        <div id="layoutSidenav" class="bg-warning bg-gradient bg-opacity-50">
+        <div id="layoutSidenav" class="bg-warning bg-gradient bg-opacity-50 sidebar">
             <th:block th:replace="~{adminFragments/sidebar :: sidebarFragment}"></th:block>
         </div>
 
-        <div id="layoutSidenav_content">
+        <div id="layoutSidenav_content" class="content">
                 <th:block layout:fragment="content"></th:block>
         </div>
     </div>

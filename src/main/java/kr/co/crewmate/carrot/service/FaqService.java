@@ -31,7 +31,7 @@ public class FaqService {
      * 자주 묻는 질문 등록
      * @param faqCreateForm
      */
-    public boolean createFaq (FaqCreateForm faqCreateForm){
+    public void createFaq (FaqCreateForm faqCreateForm){
 
             Date nowDate = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
@@ -44,8 +44,7 @@ public class FaqService {
                     .faqCreatedAt(faqCreatedAt)
                     .build();
 
-        int rowsCreate = faqMapper.insertFaq(newFaqDTO);
-        return rowsCreate > 0;
+        faqMapper.insertFaq(newFaqDTO);
     }
 
     /**
@@ -88,9 +87,8 @@ public class FaqService {
      * @param faqDeleteForm
      * @return boolean
      */
-    public boolean deleteFaq (FaqDeleteForm faqDeleteForm){
-        int deleteFaqCnt = faqMapper.deleteFaq(faqDeleteForm);
-        return deleteFaqCnt > 0;
+    public void deleteFaq (FaqDeleteForm faqDeleteForm){
+        faqMapper.deleteFaq(faqDeleteForm);
     }
 
     /**
@@ -98,9 +96,8 @@ public class FaqService {
      * @param faqModifyForm
      * @return boolean
      */
-    public boolean modifyFaq (FaqModifyForm faqModifyForm){
-        int modifyFaqCnt = faqMapper.modifyFaq(faqModifyForm);
-        return modifyFaqCnt > 0;
+    public void modifyFaq (FaqModifyForm faqModifyForm){
+        faqMapper.updateFaq(faqModifyForm);
     }
 
     /**

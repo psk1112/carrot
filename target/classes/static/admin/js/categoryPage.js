@@ -106,9 +106,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     // 삭제 버튼 클릭
-    var deleteButtons = document.querySelectorAll(".delete-button");
+    var deleteButton = document.querySelectorAll(".delete-button");
 
-    deleteButtons.forEach(function(button) {
+    deleteButton.forEach(function(button) {
         button.addEventListener("click", function(event) {
 
             var categorySeq = event.target.getAttribute("data-id");
@@ -160,11 +160,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 수정 버튼 클릭
     function handleModifyCategory(tabId){
-        var modifyButtons = document.querySelectorAll(tabId + " .modify-button");
-        var saveButtons = document.querySelectorAll(tabId + " .modi-save-button");
+        var modifyButton = document.querySelectorAll(tabId + " .modify-button");
+        var saveButton = document.querySelectorAll(tabId + " .modi-save-button");
         var categoryInputs = document.querySelectorAll(tabId + " .KindName");
 
-        modifyButtons.forEach(function(button) {
+        modifyButton.forEach(function(button) {
             button.addEventListener("click", function(event) {
 
                 // 현재 클릭한 수정 버튼의 입력필드 readonly해제
@@ -177,14 +177,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
 
                 //저장버튼 보이기
-                saveButtons.forEach(function(saveButton) {
+                saveButton.forEach(function(saveButton) {
                     saveButton.removeAttribute("hidden");
                 });
             });
         });
 
         //카테고리 목록에 있는 저장버튼 클릭
-        saveButtons.forEach(function(saveButton) {
+        saveButton.forEach(function(saveButton) {
             saveButton.addEventListener("click", function(event) {
 
             // 값 배열에 담기

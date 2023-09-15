@@ -21,25 +21,25 @@
 
     <select id="selectFaqListAll" resultType="FaqListResponseDTO">
         SELECT ROW_NUMBER() OVER(ORDER BY faq_seq ASC) AS rownum
-        , a.faq_seq
-        , a.faq_kind_seq
-        , b.faq_kind_name
-        , a.faq_title
-        , a.faq_content
-        , a.faq_view_count
-        , a.faq_created_at
-        FROM faq a
-        , faq_kind b
-        WHERE 1=1
-        AND a.faq_kind_seq = b.faq_kind_seq
+             , a.faq_seq
+             , a.faq_kind_seq
+             , b.faq_kind_name
+             , a.faq_title
+             , a.faq_content
+             , a.faq_view_count
+             , a.faq_created_at
+          FROM faq a
+             , faq_kind b
+         WHERE 1=1
+           AND a.faq_kind_seq = b.faq_kind_seq
     </select>
 
     <select id="selectFaqListAllCount" resultType="int">
         SELECT count(*)
-        FROM faq a
-        , faq_kind b
-        WHERE 1=1
-        AND a.faq_kind_seq = b.faq_kind_seq
+          FROM faq a
+             , faq_kind b
+         WHERE 1=1
+           AND a.faq_kind_seq = b.faq_kind_seq
     </select>
 
     <select id="selectFaqList" resultType="FaqListResponseDTO">
@@ -69,22 +69,22 @@
     
     <select id="selectDetailFaq" resultType="Faq">
         SELECT a.faq_seq
-        , a.faq_kind_seq
-        , b.faq_kind_name
-        , a.faq_title
-        , a.faq_content
-        , a.faq_view_count
-        , a.faq_created_at
-        FROM faq a
-        , faq_kind b
-        WHERE 1=1
-        AND a.faq_kind_seq = b.faq_kind_seq
+             , a.faq_kind_seq
+             , b.faq_kind_name
+             , a.faq_title
+             , a.faq_content
+             , a.faq_view_count
+             , a.faq_created_at
+          FROM faq a
+             , faq_kind b
+         WHERE 1=1
+           AND a.faq_kind_seq = b.faq_kind_seq
         <if test="faqSeq != null and faqSeq != ''">
-            AND a.faq_seq = #{faqSeq}
+           AND a.faq_seq = #{faqSeq}
         </if>
     </select>
     
-    <update id="modifyFaq" parameterType="FaqModifyForm">
+    <update id="updateFaq" parameterType="FaqModifyForm">
         UPDATE faq
            SET faq_kind_seq = #{faqKindSeq}
              , faq_title = #{faqTitle}

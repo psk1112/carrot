@@ -1,0 +1,134 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/adminlayout}" xmlns="http://www.w3.org/1999/html">
+
+
+<th:block layout:fragment="css">
+    <style>
+        .btnDiv{
+            text-align: right;
+            padding-right: 1rem;
+        }
+        .card-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+        .card {
+            width: 60rem;
+            min-height: 70vh;
+            max-height: 80vh;
+            overflow: auto;
+        }
+        a {
+          text-decoration: none;
+        }
+        .img-thumbnail {
+            width: 100px;
+            height: auto;
+            margin: 5px;
+        }
+        #moreBtn{
+            vertical-align: bottom;
+            margin-bottom: -8px;
+        }
+        .modal-content {
+            min-height: 90vh;
+            max-height: 90vh;
+        }
+        .modal-body {
+            max-height: 80vh;
+        }
+
+        .modal-body {
+            max-height: 80vh;
+        }
+
+        .carousel-inner img {
+            max-height: 80vh;
+            object-fit: contain
+        }
+    </style>
+</th:block>
+<th:block layout:fragment="script">
+    <script src="/admin/js/questionModifyPage.js"></script>
+</th:block>
+<div layout:fragment="content" class="container my-3 card-container">
+    <div class="card" style="width: 50rem;">
+        <div class="card-body">
+            <h2 class="card-title">문의하기 수정</h2><br>
+            <input type="hidden" id="questionSeq" name="questionSeq" th:value="${question.questionSeq}">
+            <div class="mb-3 row">
+                <input type="hidden" id="selectedSeq" name="selectedSeq" th:value="${question.questionKindSeq}">
+                <label for="questionKindSeq" class="col-sm-1 col-form-label">구분:</label>
+                <div class="col-sm-11">
+                    <select class="form-select" id="questionKindSeq" name="questionKindSeq" aria-label="questionKindSelector">
+                        <option th:each="questionNm : ${questionKind}" th:value="${questionNm.questionKindSeq}" th:text="${questionNm.questionKindName}"></option>
+                    </select>
+                    <div class="errordiv"></div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="questionTitle" class="col-sm-1 col-form-label">제목:</label>
+                <div class="col-sm-11">
+                    <input id="questionTitle" name="questionTitle" type="text" class="form-control" th:value="${question.questionTitle}">
+                    <div class="errordiv"></div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="questionContent" class="col-sm-1 col-form-label">내용:</label>
+                <div class="col-sm-11">
+                    <textarea id="questionContent" name="questionContent" rows="6" class="form-control" th:text="${question.questionContent}" ></textarea>
+                    <div class="errordiv"></div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="file" class="form-control" id="questionFiles" name="questionFiles" accept=".jpg, .jpeg, .png, .gif" multiple>
+            </div>
+            <div class="mb-3 imageBox">
+                <div id="previewContainer">
+                    <img th:if="${question.filePaths.size() > 0}" th:src="${question.filePaths[0]}" alt="이미지" class="img-thumbnail">
+                    <span th:if="${question.filePaths.size() > 0}" th:text="'📷: ' + ${question.filePaths.size()} + '개'"
+                          style="display: inline-block; vertical-align: bottom;"></span>
+                    <button type="button" onclick="openModal()" th:if="${question.filePaths.size() > 1}"
+                            id="moreBtn" class="btn btn-link">[이미지 보기]</button>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 btnDiv">
+            <button type="button" class="btn btn-secondary" id="cancel-button" th:onclick="|location.href='@{/user/my-question}'|">취소</button>
+            <button type="button" class="btn btn-warning" id="save-button">저장</button>
+        </div>
+        <!-- Modal Start -->
+        <div class="modal" id="imageModal" tabindex="-1" role="dialog" data-bs-backdrop="static" >
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="imageCarousel" class="carousel slide" data-bs-ride="true">
+                            <div class="carousel-inner">
+                                <div class="carousel-item" th:each="question : ${question.filePaths}">
+                                    <img th:src="${question}" class="d-block w-100" alt="...">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal End -->
+    </div>
+</div>
+</html>

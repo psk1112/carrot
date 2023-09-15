@@ -1,10 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var modifyButtons = document.querySelectorAll(".modify-button");
-    var deleteButtons = document.querySelectorAll(".delete-button");
-    var writeButtons = document.getElementById("writeBtn");
+    var deleteButton = document.querySelectorAll(".delete-button");
 
     // 삭제 버튼 클릭 시
-    deleteButtons.forEach(function(button) {
+    deleteButton.forEach(function(button) {
         button.addEventListener("click", function(event) {
             var row = event.target.closest("tr");
             var faqSeq = row.getAttribute("faq-seq-id");
@@ -29,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     fetch("/admin/faq", {
                         method: "DELETE",
                         headers: {
-                            "Content-Type": "application/json;charset=UTF-8"
+                            'Content-Type': 'application/json'
                         },
                         body: jsonData
                     })

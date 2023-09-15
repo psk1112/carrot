@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var cancelButtons = document.getElementById("cancel-button");
-    var save = document.getElementById("save-button");
+    var saveButton = document.getElementById("save-button");
     var selectedSeq = document.getElementById("selectedSeq").value;
 
 
@@ -26,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     //저장버튼 클릭 시
-    save.addEventListener("click", function(){
+    saveButton.addEventListener("click", function(){
 
         // 이전 에러 메시지 삭제
         document.querySelectorAll(".errordiv").forEach(function (errordiv) {

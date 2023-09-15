@@ -52,10 +52,10 @@ public class FaqRestController {
             response.setBody(error);
 
         } else {
-            boolean save = faqService.createFaq(faqCreateForm);
-            if (save) {
+            try {
+                faqService.createFaq(faqCreateForm);
                 response.setStatusCode(200);
-            } else {
+            } catch (Exception e){
                 response.setStatusCode(400);
             }
         }
@@ -68,10 +68,10 @@ public class FaqRestController {
 
         CommonResponse response = new CommonResponse();
 
-        boolean deleted = faqService.deleteFaq(faqDeleteForm);
-        if (deleted) {
+        try {
+            faqService.deleteFaq(faqDeleteForm);
             response.setStatusCode(200);
-        } else {
+        } catch (Exception e){
             response.setStatusCode(400);
         }
         return response;
@@ -96,10 +96,10 @@ public class FaqRestController {
             response.setStatusCode(401);
             response.setBody(error);
         } else {
-            boolean modify = faqService.modifyFaq(faqModifyForm);
-            if (modify) {
+            try {
+                faqService.modifyFaq(faqModifyForm);
                 response.setStatusCode(200);
-            } else {
+            } catch (Exception e){
                 response.setStatusCode(403);
             }
         }

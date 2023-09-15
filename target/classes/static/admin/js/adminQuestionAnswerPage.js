@@ -41,7 +41,7 @@ function openModal() {
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    var saveButtons = document.getElementById("save-button");
+    var saveButton = document.getElementById("save-button");
     //에러메시지 표시 함수
     function displayError(fieldId, errorMessage) {
         var errorDiv = document.querySelector(fieldId + " + .errordiv");
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // 저장 버튼 클릭 시
-    saveButtons.addEventListener("click", function(){
+    saveButton.addEventListener("click", function(){
 
         // 이전 에러 메시지 삭제
         document.querySelectorAll(".errordiv").forEach(function (errordiv) {
